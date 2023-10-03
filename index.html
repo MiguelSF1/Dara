@@ -12,10 +12,35 @@
     <body>
 
         <section id="logo-section">
-            <h1 id="logo">Dara</h1>
+            <h1 id="logo">Play Dara!</h1>
         </section>
 
-        <section id="config-section">
+        <section id="login-section" class="logged-out">
+            <h2>Login</h2>
+            <form>
+                <label for="userId" id="userId-label" class="login-label"> User <input type="text" id="userId" class="login-input" name="userId" placeholder="Enter your id" required /></label>
+                <label for="password" id="password-label" class="login-label"> Password <input type="password" id="password" class="login-input" name="password" placeholder="Enter your password" required /></label>
+                <input id="login-button" class="login-input" type="submit" value="Sign in">
+            </form>
+        </section>
+
+        <section id="command-panel-section" class="logged-in">
+            <h2>Commands</h2>
+            <nav id="command-panel">
+                <ul>
+                    <li><a>Instructions</a></li>
+                    <li>Start game</li>
+                    <li>Forfeit</li>
+                    <li><a>Leaderboard</a></li>
+                </ul>
+            </nav>
+        </section>
+
+        <section id="board-section">
+            
+        </section>
+
+        <section id="config-section" class="logged-in">
             <h2>Game configuration</h2>
 
             <div id="board-size-div">
@@ -64,29 +89,6 @@
                 </label>
             </div>
    
-        </section>
-
-        <section id="command-panel-section">
-            <h2>Commands</h2>
-            <nav id="command-panel">
-                <ul>
-                    <li><a>Instructions</a></li>
-                    <li>Start game</li>
-                    <li>Forfeit</li>
-                    <li><a>Leaderboard</a></li>
-                </ul>
-            </nav>
-        </section>
-
-        <section id="login-section">
-            <h2>Login</h2>
-            <label for="userId" id="userId-label"> UserId <input type="text" id="userId" name="userId" placeholder="Enter your id" required /></label>
-            <label for="password" id="password-label"> Password <input type="password" id="password" name="password" placeholder="Enter your password" required /></label>
-            <input id="login-button" type="submit" value="Login">
-        </section>
-
-        <section id="board-section">
-
         </section>
 
         <section id="instructions-section">
@@ -162,11 +164,11 @@
 
         </section>
 
-        <section id="leaderboard-section">
+        <section id="leaderboard-section" class="logged-in">
 
         </section>
 
-        <section id="messages-section">
+        <section id="messages-section" class="logged-in">
 
         </section>
 

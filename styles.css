@@ -1,0 +1,45 @@
+.logged-in {
+    display: none;
+}   
+
+#instructions-section {
+    display: none;
+}
+
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+}
+
+#logo-section {
+    background-color: #be3144;
+    padding: 2px;
+}
+
+#logo {
+    text-align: center;
+    font-size: 40px;
+    margin: 5px;
+    color: white;
+}
+
+#login-section {
+    max-width: 500px;
+    min-width: 300px;
+    margin: auto;
+    padding-top: 10%;
+}
+
+
+.login-input {
+    margin-top: 10px;
+    width: 100%;
+    min-height: 2em;
+}
+
+.login-label {
+    display: block;
+    margin: 0.5rem 0;
+}
+
