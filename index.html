@@ -55,7 +55,7 @@
             <div id="board-size-div">
                 <h3>Board size</h3>
                 <label for="board-size-6x6" id="board-size-6x6-label">
-                    <input type="radio" id="board-size-6x6" name="board-size" value="6x6">
+                    <input type="radio" id="board-size-6x6" name="board-size" value="6x6" checked>
                     6x6
                 </label>
                 <label for="board-size-6x5" id="board-size-6x5-label">
@@ -67,8 +67,8 @@
             <div id="play-against-div">
                 <h3>Play against</h3>
                 <label for="computer" id="computer-label">
-                    <input type="radio" id="computer" name="play-against" value="computer">
-                    Computer (black color)
+                    <input type="radio" id="computer" name="play-against" value="computer" checked>
+                    Computer
                 </label>
                 <label for="player" id="player-label">
                     <input type="radio" id="player" name="play-against" value="player">
@@ -76,25 +76,43 @@
                 </label>
             </div>
 
-            <div id="starting-color-div">
-                <h3>Pick the starting color</h3>
-                <label for="white" id="white-label">
-                    <input type="radio" id="white" name="starting-color" value="white">
+            <div id="pick-color-div">
+                <h3>Pick your color</h3>
+                <label for="pick-white" id="pick-white-label">
+                    <input type="radio" id="pick-white" name="pick-color" value="white" checked>
                     White
                 </label>
-                <label for="black" id="black-label">
-                    <input type="radio" id="black" name="starting-color" value="black">
+                <label for="pick-black" id="pick-black-label">
+                    <input type="radio" id="pick-black" name="pick-color" value="black">
+                    Black
+                </label>
+            </div>
+
+            <div id="pick-starting-color">
+                <h3>Pick the starting color</h3>
+                <label for="start-white" id="start-white-label">
+                    <input type="radio" id="start-white" name="start-color" value="white" checked>
+                    White
+                </label>
+                <label for="start-black" id="start-black-label">
+                    <input type="radio" id="start-black" name="start-color" value="black">
                     Black
                 </label>
             </div>
 
             <div id="difficulty-level-div">
-                <h3>Difficulty level</h3>
-                <label for="difficulty-level-dropdown" id="difficulty-level-label">
-                    Pick a difficulty level for the computer
-                    <select id="difficulty-level-dropdown" name="difficulty-level">
-                        <option value="">Select one</option>
-                      </select>
+                <h3>Computer Difficulty level</h3>
+                <label for="easy" id="easy-label">
+                    <input type="radio" id="easy" name="difficulty-level" value="easy" checked>
+                    Easy
+                </label>
+                <label for="medium" id="medium-label">
+                    <input type="radio" id="medium" name="difficulty-level" value="medium">
+                    Medium
+                </label>
+                <label for="hard" id="hard-label">
+                    <input type="radio" id="hard" name="difficulty-level" value="hard">
+                    Hard
                 </label>
             </div>
    

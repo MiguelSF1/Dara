@@ -23,7 +23,54 @@ function changeInstructionsPage() {
 
 class Game {
     board = []
-    state = "placing"; // placing, moving
-    
+    state = "placing"; // placing or moving
+    insideWhitePieceCount = 0;
+    insideBlackPieceCount = 0;
+
+    constructor(rows, columns, difficulty, curPlayer) {
+        this.rows = rows;
+        this.columns = columns;
+        this.difficulty = difficulty;
+        this.curPlayer = curPlayer;
+
+        for (let i = 0; i < rows; i++) {
+            this.board.push([]);
+            for (let j = 0; j < columns; j++) {
+                this.board[i].push(' ');
+            }
+        }
+    }
+
+    switchTurn() {
+        if (this.curPlayer === 'w') {
+            this.curPlayer = 'b';
+        } else {
+          this.curPlayer = 'w';
+        }
+    }
+    placePiece(row, column) {
+
+    }
+
+    movePiece(startingRow, startingColumn, endingRow, endingColumn) {
+
+    }
+
+    removePiece(row, column) {
+
+    }
+
+    checkInLinePiece(row, column) {
+        return false;
+    }
+
+    gameWinner() {
+        if (this.insideBlackPieceCount < 3 && this.state === "moving") {
+            return 'w';
+        } else if (this.insideWhitePieceCount < 3 && this.state === 'moving') {
+            return 'b';
+        }
+        return ' ';
+    }
 }
 
