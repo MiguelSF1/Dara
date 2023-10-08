@@ -15,12 +15,12 @@
             <h1 id="logo">Play Dara!</h1>
         </section>
 
-        <section id="login-section" class="logged-out">
-            <h2>Login</h2>
+        <section id="login-section" class="logged-out window">
+            <h2 class="centered-text">Login</h2>
             <form>
                 <label for="userId" id="userId-label" class="login-label"> User <input type="text" id="userId" class="login-input" name="userId" placeholder="Enter your id" required /></label>
                 <label for="password" id="password-label" class="login-label"> Password <input type="password" id="password" class="login-input" name="password" placeholder="Enter your password" required /></label>
-                <input id="login-button" class="login-input" type="submit" value="Sign in">
+                <input id="login-button" class="button" type="submit" value="Sign in">
             </form>
         </section>
 
@@ -47,7 +47,7 @@
             </div>
         </section>
 
-        <section id="config-section" class="logged-in">
+        <section id="config-section" class="logged-in window">
             <a href="javascript:closeContent('config-section')" class="close button">X</a>
             <h2 class="centered-text">Game configuration</h2>
             <hr>
@@ -100,7 +100,7 @@
    
         </section>
 
-        <section id="instructions-section">
+        <section id="instructions-section" class="window">
             <a href="javascript:closeContent('instructions-section')" class="close button">X</a>
             <a href="javascript:changeInstructionsPage()" class="button">Game rules</a>
             <a href="javascript:changeInstructionsPage()" class="button">How to play</a>
@@ -177,14 +177,14 @@
 
         </section>
 
-        <section id="leaderboard-section">
+        <section id="leaderboard-section" class="window">
             <a href="javascript:closeContent('leaderboard-section')" class="close button">X</a>
             <h2 class="centered-text">Leaderboard</h2>
             <hr>
         </section>
 
         <section id="messages-section" class="logged-in">
-
+            
         </section>
 
     </body>
