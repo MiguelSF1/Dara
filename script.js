@@ -9,10 +9,10 @@ function closeContent(id) {
 }
 
 function changeInstructionsPage() {
-    gameRules = document.getElementById("game-rules-div");
-    howToPlay = document.getElementById("how-to-play-div");
+    let gameRules = document.getElementById("game-rules-div");
+    let howToPlay = document.getElementById("how-to-play-div");
 
-    if (gameRules.style.display != "none") {
+    if (gameRules.style.display !== "none") {
         gameRules.style.display = "none";
         howToPlay.style.display = "block";
     } else {
@@ -21,5 +21,8 @@ function changeInstructionsPage() {
     }
 }
 
+class Game {
+    board = [];
 
+}
 

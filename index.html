@@ -36,13 +36,22 @@
             <hr>
         </section>
 
-        <section id="board-section">
-            
+        <section id="game-section" class="logged-in">
+            <div id="white-pieces">
+
+            </div>
+            <div id="board">
+
+            </div>
+            <div id="black-pieces">
+                
+            </div>
         </section>
 
         <section id="config-section" class="logged-in">
             <a href="javascript:closeContent('config-section')" class="close">CLOSE</a>
             <h2 class="centered-text">Game configuration</h2>
+            <hr>
 
             <div id="board-size-div">
                 <h3>Board size</h3>
@@ -80,11 +89,11 @@
                 </label>
             </div>
 
-            <div id="dificulty-level-div">
-                <h3>Dificulty level</h3>
-                <label for="dificulty-level-dropdown" id="dificulty-level-label">
-                    Pick a dificulty level for the computer
-                    <select id="dificulty-level-dropdown" name="dificulty-level">
+            <div id="difficulty-level-div">
+                <h3>Difficulty level</h3>
+                <label for="difficulty-level-dropdown" id="difficulty-level-label">
+                    Pick a difficulty level for the computer
+                    <select id="difficulty-level-dropdown" name="difficulty-level">
                         <option value="">Select one</option>
                       </select>
                 </label>
@@ -101,64 +110,64 @@
                 <hr>
                 <div class="rule">
                     <h3>Board and pieces</h3>
-                    <p>
-                        Dara is played on a board with 6 rows x 5 columns
-                        Other dimensions are possible, such as 6 x 6
-                        Each of the 2 players has 12 pieces
-                        One player plays with black squares, another with white
-                        All 22 pieces are always visible, on the board or outside
-                        Pieces outside the board are grouped by color, on each side
-                    </p>
+                    <ul>
+                        <li>Dara is played on a board with 6 rows x 5 columns</li>
+                        <li>Other dimensions are possible, such as 6 x 6</li>
+                        <li>Each of the 2 players has 12 pieces</li>
+                        <li>One player plays with black squares, another with white</li>
+                        <li>All 22 pieces are always visible, on the board or outside</li>
+                        <li>Pieces outside the board are grouped by color, on each side</li>
+                    </ul>
                 </div>
                 <div class="rule">
                     <h3>Basic rules</h3>
-                    <p>
-                        Players choose a color and decide who goes first
-                        Initially the board is empty
-                        The game has 2 phases:
-                        Phase 1 - Placing the pieces (drop)
-                        Phase 2 - Move the pieces (move)
-                    </p>
+                    <ul>
+                        <li>Players choose a color and decide who goes first</li>
+                        <li>Initially the board is empty</li>
+                        <li>The game has 2 phases:</li>
+                        <li>Phase 1 - Placing the pieces (drop)</li>
+                        <li>Phase 2 - Move the pieces (move)</li>
+                    </ul>
                 </div>
                 <div class="rule">
                     <h3>Pieces in line</h3>
-                    <p>
-                        They are considered online
-                        sequences of 3 or more contiguous pieces
-                        horizontally or vertically (not diagonally)
-                        all the same color
-                    </p>
+                    <ul>
+                        <li>They are considered online</li>
+                        <li>sequences of 3 or more contiguous pieces</li>
+                        <li>horizontally or vertically (not diagonally)</li>
+                        <li>all the same color</li>
+                    </ul>
                 </div>
                 <div class="rule">
                     <h3>Putting the pieces</h3>
-                    <p>
-                        Players alternately place one of their pieces on a free square
-                        No more than 3 pieces can be placed in a row
-                        There can be 3 pieces in a line (but it is not advantageous)
-                    </p>
+                    <ul>
+                        <li>Players alternately place one of their pieces on a free square</li>
+                        <li>No more than 3 pieces can be placed in a row</li>
+                        <li>There can be 3 pieces in a line (but it is not advantageous)</li>
+                    </ul>
                 </div>
                 <div class="rule">
                     <h3>Moving the pieces</h3>
-                    <p>
-                        Each player alternately moves a piece of their color
-                        A piece can only be moved to an adjacent square
-                        Pieces moved only horizontally or vertically (not diagonally)
-                        A line of size 3 allows you to capture the opponent's piece
-                        In this case, remove an opponent's piece of your choice
-                        Only one piece is removed per move (even if several lines are formed)
-                        Lines with more than 3 pieces cannot be formed
-                        A piece cannot return to the position of the previous move
-                        You can only return to that space in subsequent moves
-                    </p>
+                    <ul>
+                        <li>Each player alternately moves a piece of their color</li>
+                        <li>A piece can only be moved to an adjacent square</li>
+                        <li>Pieces moved only horizontally or vertically (not diagonally)</li>
+                        <li>A line of size 3 allows you to capture the opponent's piece</li>
+                        <li>In this case, remove an opponent's piece of your choice</li>
+                        <li>Only one piece is removed per move (even if several lines are formed)</li>
+                        <li>Lines with more than 3 pieces cannot be formed</li>
+                        <li>A piece cannot return to the position of the previous move</li>
+                        <li>You can only return to that space in subsequent moves</li>
+                    </ul>
                 </div>
                 <div class="rule">
                     <h3>End of the game</h3>
-                    <p>
-                        The game ends when one player cannot win
-                        For example, if you only have 2 pieces on the board
-                        Or if you cannot make a valid move
-                        The player who cannot win loses the game
-                    </p>
+                    <ul>
+                        <li>The game ends when one player cannot win</li>
+                        <li>For example, if you only have 2 pieces on the board</li>
+                        <li>Or if you cannot make a valid move</li>
+                        <li>The player who cannot win loses the game</li>
+                    </ul>
                 </div>
             </div>
 
@@ -169,8 +178,10 @@
 
         </section>
 
-        <section id="leaderboard-section" class="logged-in">
+        <section id="leaderboard-section">
             <a href="javascript:closeContent('leaderboard-section')" class="close">CLOSE</a>
+            <h2 class="centered-text">Leaderboard</h2>
+            <hr>
         </section>
 
         <section id="messages-section" class="logged-in">
