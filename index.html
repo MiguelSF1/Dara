@@ -25,15 +25,14 @@
         </section>
 
         <section id="command-panel-section" class="logged-in">
-            <h2>Commands</h2>
-            <nav id="command-panel">
-                <ul>
-                    <li><a>Instructions</a></li>
-                    <li>Start game</li>
-                    <li>Forfeit</li>
-                    <li><a>Leaderboard</a></li>
-                </ul>
-            </nav>
+            <hr>
+            <ul class="centered-text">                    
+                <li class="command"><a href="javascript:openContent('instructions-section')">Instructions</a></li>
+                <li class="command">Start game</li>
+                <li class="command">Forfeit</li>
+                <li class="command"><a href="javascript:openContent('leaderboard-section')">Leaderboard</a></li>
+            </ul>
+            <hr>
         </section>
 
         <section id="board-section">
@@ -92,10 +91,13 @@
         </section>
 
         <section id="instructions-section">
-
+            <a href="javascript:closeContent('instructions-section')" class="close">CLOSE</a>
+            <a href="javascript:changeInstructionsPage()" class="bold-text">Game rules</a>
+            <a href="javascript:changeInstructionsPage()" class="bold-text">How to play</a>
             <div id="game-rules-div">
-                <h2>Game rules</h2>
-                <div>
+                <h2 class="centered-text">Game rules</h2>
+                <hr>
+                <div class="rule">
                     <h3>Board and pieces</h3>
                     <p>
                         Dara is played on a board with 6 rows x 5 columns
@@ -106,7 +108,7 @@
                         Pieces outside the board are grouped by color, on each side
                     </p>
                 </div>
-                <div>
+                <div class="rule">
                     <h3>Basic rules</h3>
                     <p>
                         Players choose a color and decide who goes first
@@ -116,7 +118,7 @@
                         Phase 2 - Move the pieces (move)
                     </p>
                 </div>
-                <div>
+                <div class="rule">
                     <h3>Pieces in line</h3>
                     <p>
                         They are considered online
@@ -125,7 +127,7 @@
                         all the same color
                     </p>
                 </div>
-                <div>
+                <div class="rule">
                     <h3>Putting the pieces</h3>
                     <p>
                         Players alternately place one of their pieces on a free square
@@ -133,7 +135,7 @@
                         There can be 3 pieces in a line (but it is not advantageous)
                     </p>
                 </div>
-                <div>
+                <div class="rule">
                     <h3>Moving the pieces</h3>
                     <p>
                         Each player alternately moves a piece of their color
@@ -147,7 +149,7 @@
                         You can only return to that space in subsequent moves
                     </p>
                 </div>
-                <div>
+                <div class="rule">
                     <h3>End of the game</h3>
                     <p>
                         The game ends when one player cannot win
@@ -159,13 +161,14 @@
             </div>
 
             <div id="how-to-play-div">
-
+                <h2 class="centered-text">How to play</h2>
+                <hr>
             </div>
 
         </section>
 
         <section id="leaderboard-section" class="logged-in">
-
+            <a href="javascript:closeContent('leaderboard-section')" class="close">CLOSE</a>
         </section>
 
         <section id="messages-section" class="logged-in">
