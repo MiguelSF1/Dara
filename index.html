@@ -28,6 +28,7 @@
             <hr>
             <ul class="centered-text">                    
                 <li class="command"><a href="javascript:openContent('instructions-section')">Instructions</a></li>
+                <li class="command"><a href="javascript:openContent('config-section')">Configuration</a></li>
                 <li class="command">Start game</li>
                 <li class="command">Forfeit</li>
                 <li class="command"><a href="javascript:openContent('leaderboard-section')">Leaderboard</a></li>
@@ -40,7 +41,8 @@
         </section>
 
         <section id="config-section" class="logged-in">
-            <h2>Game configuration</h2>
+            <a href="javascript:closeContent('config-section')" class="close">CLOSE</a>
+            <h2 class="centered-text">Game configuration</h2>
 
             <div id="board-size-div">
                 <h3>Board size</h3>

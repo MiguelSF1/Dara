@@ -44,20 +44,24 @@ body {
     margin: 0.5rem 0;
 }
 
-#leaderboard-section, #instructions-section {
-    display: none;
+#leaderboard-section, #instructions-section, #config-section {
     position: absolute;
     border: 6px solid black;
     border-style: groove;
     background-color: white;
     z-index: 2;
     padding: 10px;
+}
+
+#leaderboard-section, #instructions-section {
+    display: none;
     height: 83%;
     width: 98.3%;
 }
 
 #config-section {
-    position: absolute;
+    margin-top: 8%;
+    margin-left: 40%;
 }
 
 .rule {
