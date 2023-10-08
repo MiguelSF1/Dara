@@ -25,13 +25,12 @@
         </section>
 
         <section id="command-panel-section" class="logged-in">
-            <hr>
             <ul class="centered-text">                    
-                <li class="command"><a href="javascript:openContent('instructions-section')">Instructions</a></li>
-                <li class="command"><a href="javascript:openContent('config-section')">Configuration</a></li>
-                <li class="command">Start game</li>
-                <li class="command">Forfeit</li>
-                <li class="command"><a href="javascript:openContent('leaderboard-section')">Leaderboard</a></li>
+                <li class="button"><a href="javascript:openContent('instructions-section')">Instructions</a></li>
+                <li class="button"><a href="javascript:openContent('config-section')">Configuration</a></li>
+                <li class="button">Start game</li>
+                <li class="button">Forfeit</li>
+                <li class="button"><a href="javascript:openContent('leaderboard-section')">Leaderboard</a></li>
             </ul>
             <hr>
         </section>
@@ -49,18 +48,18 @@
         </section>
 
         <section id="config-section" class="logged-in">
-            <a href="javascript:closeContent('config-section')" class="close">CLOSE</a>
+            <a href="javascript:closeContent('config-section')" class="close button">X</a>
             <h2 class="centered-text">Game configuration</h2>
             <hr>
 
             <div id="board-size-div">
                 <h3>Board size</h3>
                 <label for="board-size-6x6" id="board-size-6x6-label">
-                    <input type="radio" class="inline" id="board-size-6x6" name="board-size" value="6x6">
+                    <input type="radio" id="board-size-6x6" name="board-size" value="6x6">
                     6x6
                 </label>
                 <label for="board-size-6x5" id="board-size-6x5-label">
-                    <input type="radio" class="inline" id="board-size-6x5" name="board-size" value="6x5">
+                    <input type="radio" id="board-size-6x5" name="board-size" value="6x5">
                     6x5
                 </label>
             </div>
@@ -68,11 +67,11 @@
             <div id="play-against-div">
                 <h3>Play against</h3>
                 <label for="computer" id="computer-label">
-                    <input type="radio" class="inline" id="computer" name="play-against" value="computer">
+                    <input type="radio" id="computer" name="play-against" value="computer">
                     Computer (black color)
                 </label>
                 <label for="player" id="player-label">
-                    <input type="radio" class="inline" id="player" name="play-against" value="player">
+                    <input type="radio" id="player" name="play-against" value="player">
                     Player
                 </label>
             </div>
@@ -80,11 +79,11 @@
             <div id="starting-color-div">
                 <h3>Pick the starting color</h3>
                 <label for="white" id="white-label">
-                    <input type="radio" class="inline" id="white" name="starting-color" value="white">
+                    <input type="radio" id="white" name="starting-color" value="white">
                     White
                 </label>
                 <label for="black" id="black-label">
-                    <input type="radio" class="inline" id="black" name="starting-color" value="black">
+                    <input type="radio" id="black" name="starting-color" value="black">
                     Black
                 </label>
             </div>
@@ -102,9 +101,9 @@
         </section>
 
         <section id="instructions-section">
-            <a href="javascript:closeContent('instructions-section')" class="close">CLOSE</a>
-            <a href="javascript:changeInstructionsPage()" class="bold-text">Game rules</a>
-            <a href="javascript:changeInstructionsPage()" class="bold-text">How to play</a>
+            <a href="javascript:closeContent('instructions-section')" class="close button">X</a>
+            <a href="javascript:changeInstructionsPage()" class="button">Game rules</a>
+            <a href="javascript:changeInstructionsPage()" class="button">How to play</a>
             <div id="game-rules-div">
                 <h2 class="centered-text">Game rules</h2>
                 <hr>
@@ -179,7 +178,7 @@
         </section>
 
         <section id="leaderboard-section">
-            <a href="javascript:closeContent('leaderboard-section')" class="close">CLOSE</a>
+            <a href="javascript:closeContent('leaderboard-section')" class="close button">X</a>
             <h2 class="centered-text">Leaderboard</h2>
             <hr>
         </section>
