@@ -45,16 +45,12 @@ body {
     padding: 10px 20px;
 }
 
+.hidden {
+    display: none;
+}
+
 #leaderboard-section, #instructions-section, #config-section {
     position: absolute;
-}
-
-#config-section {
-    z-index: 1;
-}
-
-#leaderboard-section, #instructions-section, #how-to-play-div {
-    display: none;
     z-index: 2;
 }
 
@@ -62,11 +58,12 @@ body {
     padding: 10px;
 }
 
-#config-section {
-    margin-top: 8%;
-    margin-left: 40%;
+.centered {
+    left: 0; 
+    right: 0; 
+    margin-left: auto; 
+    margin-right: auto; 
 }
-
 
 .centered-text {
     text-align: center;
@@ -92,7 +89,6 @@ a, a:hover, a:active, a:visited {
 .close {
     background-color: rgb(220, 0, 0);
 }
-
 
 .window {
     padding: 20px;

@@ -22,7 +22,8 @@ function changeInstructionsPage() {
 }
 
 class Game {
-    board = [];
-
+    board = []
+    state = "placing"; // placing, moving
+    
 }
 
