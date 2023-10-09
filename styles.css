@@ -97,3 +97,11 @@ a, a:hover, a:active, a:visited {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     border-radius: 5px;
 }
+
+
+#board {
+    background-color: yellowgreen;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+}

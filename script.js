@@ -23,15 +23,15 @@ function changeInstructionsPage() {
 
 class Game {
 
-    constructor(rows, columns, difficulty, curPlayer) {
+    constructor(rows, columns, curPlayer) {
         this.rows = rows;
         this.columns = columns;
-        this.difficulty = difficulty;
         this.curPlayer = curPlayer;
         this.board = [];
         this.state = "placing";
         this.insideWhitePieceCount = 0;
         this.insideBlackPieceCount = 0;
+        this.winner = ' ';
 
         for (let i = 0; i < rows; i++) {
             this.board.push([]);
@@ -73,7 +73,7 @@ class Game {
             }
             this.switchTurn();
         } else {
-            // message ilegal move
+            // message illegal move
         }
     }
 
@@ -151,12 +151,99 @@ class Game {
     gameWinner() {
         if (this.insideBlackPieceCount < 3 && this.state === "moving") {
             // message white won
-            return 'w';
+            this.winner = 'w';
         } else if (this.insideWhitePieceCount < 3 && this.state === 'moving') {
             // message black won
-            return 'b';
+            this.winner = 'b';
         }
-        return ' ';
+        return this.winner;
     }
+
+    forfeit() {
+        if (this.curPlayer === 'w') {
+            // message white forfeit so black won
+            this.winner = 'b';
+        } else if (this.curPlayer === 'b') {
+            // message black forfeit so white won
+            this.winner = 'w';
+        } else {
+            // message no game to forfeit
+        }
+    }
+}
+
+let game = new Game();
+
+function startGame() {
+    const boardSizeRadio = document.getElementsByName("board-size");
+    const playAgainstRadio = document.getElementsByName("play-against");
+    const pickColorRadio = document.getElementsByName("pick-color");
+    const startColorRadio = document.getElementsByName("start-color");
+    const difficultyLevelRadio = document.getElementsByName("difficulty-level");
+
+    let boardSize;
+    for (let value of boardSizeRadio) {
+        if (value.checked) {
+            boardSize = value.split('x');
+            break;
+        }
+    }
+    let rows = parseInt(boardSize[0]);
+    let columns = parseInt(boardSize[1]);
+
+    let opponent;
+    for (let value of playAgainstRadio) {
+        if (value.checked) {
+            opponent = value;
+            break;
+        }
+    }
+
+    let playerColor;
+    for (let value of pickColorRadio) {
+        if (value.checked) {
+            playerColor = value;
+            break;
+        }
+    }
+
+    let curPlayer;
+    for (let value of startColorRadio) {
+        if (value.checked) {
+            curPlayer = value;
+            break;
+        }
+    }
+
+    let difficulty;
+    for (let value of difficultyLevelRadio) {
+        if (value.checked) {
+            difficulty = value;
+            break;
+        }
+    }
+
+    game = new Game(rows, columns, curPlayer);
+
+    // make the board and display the pieces
+    let board = document.getElementById("board");
+    board.style.width = (90 * columns).toString() + "px";
+    board.style.height = (90 * rows).toString() + "px";
+
+    while (game.gameWinner() === ' ') {
+        if (playerColor === game.curPlayer) {
+
+        } else if (opponent === "computer") {
+            if (difficulty === "easy") {
+
+            } else if (difficulty === "medium") {
+
+            } else {
+
+            }
+        }
+    }
+
+    // message gameWinner won
 }
 
