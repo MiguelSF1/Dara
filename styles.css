@@ -49,9 +49,13 @@ body {
     display: none;
 }
 
-#leaderboard-section, #instructions-section, #config-section {
+#leaderboard-section, #instructions-section, #config-section, #game-section {
     position: absolute;
     z-index: 2;
+}
+
+#instructions-section, #leaderboard-section, #config-section  {
+    width: 700px;
 }
 
 .rule {
@@ -99,9 +103,88 @@ a, a:hover, a:active, a:visited {
 }
 
 
-#board {
-    background-color: yellowgreen;
-    margin: 0 auto;
+#game-section {
     display: flex;
-    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+}
+
+#board {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    width: 600px;
+    height: 600px;
+}
+
+.box {
+    background-color: #d9d9d9;
+    border: 2px solid #be3144;
+}
+
+#white-pieces {
+    position: absolute;
+    display: grid;
+    grid-gap: 20px;
+    left: 10%;
+    top: 15%;
+    grid-template-columns: repeat(4, 1fr);
+}
+
+#black-pieces {
+    position: absolute;
+    display: grid;
+    grid-gap: 20px;
+    right: 10%;
+    bottom: 15%;
+    grid-template-columns: repeat(4, 1fr);
+}
+
+
+.white-piece {
+    width: 60px;
+    height: 60px;
+    background-color: #fff;
+    border: 1px solid #000;
+    border-radius: 50%;
+}
+
+.black-piece {
+    width: 60px;
+    height: 60px;
+    background-color: #000;
+    border: 1px solid #fff;
+    border-radius: 50%;
+}
+
+#game-phase {
+    position: absolute;
+    top: 0px;
+    background-color: rgb(130, 130, 130);
+    width: 400px;
+    text-align: center;
+    border-radius: 10%;
+    border: none;
+}
+
+#game-phase-text {
+    font-size: 20px;
+    color: white;
+}
+
+
+/* make like windows */
+#game-message {
+    position: absolute;
+    bottom: 0px;
+    background-color: rgb(130, 130, 130);
+    width: 400px;
+    text-align: center;
+    border-radius: 10%;
+    border: none;
+}
+
+#game-message-text {
+    font-size: 20px;
+    color: white;
 }

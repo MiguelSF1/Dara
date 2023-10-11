@@ -29,22 +29,88 @@
                 <li class="button"><a href="javascript:openContent('instructions-section')">Instructions</a></li>
                 <li class="button"><a href="javascript:openContent('config-section')">Configuration</a></li>
                 <li class="button"><a href="javascript:startGame()">Start game</a></li>
-                <li class="button"><a href="javascript:game.forfeit()">Forfeit</a></li>
+                <li class="button"><a href="javascript:forfeitGame()">Forfeit</a></li>
                 <li class="button"><a href="javascript:openContent('leaderboard-section')">Leaderboard</a></li>
             </ul>
             <hr>
         </section>
 
-        <section id="game-section" class="logged-in">
-            <div id="white-pieces">
+        <section id="game-section" class="logged-in centered">
+            <div id="game-phase">
+                <h2 id="game-phase-text">Placing pieces</h2>
+            </div>
 
+            <div id="white-pieces">
+                <div class="white-piece"></div>
+                <div class="white-piece"></div>
+                <div class="white-piece"></div>
+                <div class="white-piece"></div>
+                <div class="white-piece"></div>
+                <div class="white-piece"></div>
+                <div class="white-piece"></div>
+                <div class="white-piece"></div>
+                <div class="white-piece"></div>
+                <div class="white-piece"></div>
+                <div class="white-piece"></div>
+                <div class="white-piece"></div>
             </div>
             <div id="board">
-
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
             </div>
             <div id="black-pieces">
-                
+                <div class="black-piece"></div>
+                <div class="black-piece"></div>
+                <div class="black-piece"></div>
+                <div class="black-piece"></div>
+                <div class="black-piece"></div>
+                <div class="black-piece"></div>
+                <div class="black-piece"></div>
+                <div class="black-piece"></div>
+                <div class="black-piece"></div>
+                <div class="black-piece"></div>
+                <div class="black-piece"></div>
+                <div class="black-piece"></div>
             </div>
+            
+            <div id="game-message">
+                <h2 id="game-message-text">White turn</h2>
+            </div>
+
         </section>
 
         <section id="config-section" class="logged-in centered window hidden">
@@ -199,10 +265,6 @@
             <a href="javascript:closeContent('leaderboard-section')" class="close button">X</a>
             <h2 class="centered-text">Leaderboard</h2>
             <hr>
-        </section>
-
-        <section id="messages-section" class="logged-in">
-
         </section>
 
     </body>
