@@ -26,43 +26,80 @@ function getSelectedValue(name) {
 
     for (let value of radio) {
         if (value.checked) {
-            return value;
+            return value.value;
         }
     }
 
     return null;
 }
 
-
+let game;
 function startGame() {
-    // game configuration values
     const boardSize = getSelectedValue("board-size");
     const opponent = getSelectedValue("play-against");
     const playerColor = getSelectedValue("pick-color");
     const curPlayer = getSelectedValue("start-color");
     const difficulty = getSelectedValue("difficulty-level");
+    
+    const gamePhase = document.getElementById("game-phase-text");
+    const message = document.getElementById("game-message-text");
+    const startGame = document.getElementById("start-game");
+    const forfeit = document.getElementById("forfeit");
+    const board = document.getElementById("board");
 
-    const game = new Game(6, 6, curPlayer);
+    game = new Game(parseInt(boardSize[0]), parseInt(boardSize[2]), curPlayer);
 
-    // run game
-    while (game.gameWinner() === ' ') {
-        if (playerColor === game.curPlayer) {
+    startGame.style.display = "none";
+    forfeit.style.display = "inline-block";
+    gamePhase.textContent = game.state + " pieces | " + curPlayer + " turn"; // move to game
 
-        } else if (opponent === "computer") {
-            if (difficulty === "easy") {
+    makeBoard(parseInt(boardSize[0]), parseInt(boardSize[2]));
 
-            } else if (difficulty === "medium") {
 
-            } else {
-
-            }
-        }
-    }
-
-    // message gameWinner won
 }
 
 function forfeitGame() {
-    
+    const startGame = document.getElementById("start-game");
+    const forfeit = document.getElementById("forfeit");
+    const board = document.getElementById("board");
+    const whitePieces = document.getElementById("white-pieces");
+    const blackPieces = document.getElementById("black-pieces");
+    startGame.style.display = "inline-block";
+    forfeit.style.display = "none";
+    board.innerHTML = "";
+    whitePieces.innerHTML = "";
+    blackPieces.innerHTML = "";
+    game.forfeit();
 }
 
+function makeBoard(rows, cols) {
+    const board = document.getElementById("board");
+    const whitePieces = document.getElementById("white-pieces");
+    const blackPieces = document.getElementById("black-pieces");
+
+    for (let i = 0; i < rows; i++) {
+        for (let j = 0; j < cols; j++) {
+            const box = document.createElement("div");
+            box.setAttribute("box-id", i + "x" + j);
+            box.classList.add("box");
+            box.addEventListener("click", onBoxClick);
+            board.append(box);
+        }
+    }
+
+    for (let i = 0; i < 12; i++) {
+        const whitePiece = document.createElement("div");
+        const blackPiece = document.createElement("div");
+        whitePiece.classList.add("white-piece");
+        blackPiece.classList.add("black-piece");
+        whitePieces.append(whitePiece);
+        blackPieces.append(blackPiece);
+    }
+}
+
+// for some reason game runs here
+function onBoxClick(e) {
+    const boxPos = e.target.getAttribute("box-id");
+    const piece = document.getElementById("white-pieces").firstChild;
+    e.target.append(piece);
+}

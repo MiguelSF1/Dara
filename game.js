@@ -9,6 +9,8 @@ class Game {
         this.insideWhitePieceCount = 0;
         this.insideBlackPieceCount = 0;
         this.winner = ' ';
+        this.message = document.getElementById("game-message-text");
+        this.gamePhase = document.getElementById("game-phase-text");
 
         for (let i = 0; i < rows; i++) {
             this.board.push([]);
@@ -36,7 +38,7 @@ class Game {
             }
             this.switchTurn();
         } else if (this.state === "placing" && this.board[row][column] !== ' ') {
-            // message saying cant place a piece there
+            this.message.textContent = "Cant place piece there";
         }
     }
 
@@ -45,12 +47,12 @@ class Game {
             this.board[endingRow][endingColumn] = this.board[startingRow][startingColumn];
             this.board[startingRow][startingColumn] = ' ';
             if (this.checkInLinePiece(endingRow, endingColumn)) {
-                // message can remove piece
+                this.message.textContent = "Can remove a piece";
                 // call removePiece
             }
             this.switchTurn();
         } else {
-            // message illegal move
+            this.message.textContent = "Illegal move";
         }
     }
 
@@ -64,7 +66,7 @@ class Game {
             this.board[row][column] = ' ';
         }
         else {
-            // message no piece there
+            this.message.textContent = "No piece there";
         }
     }
 
@@ -127,10 +129,12 @@ class Game {
 
     gameWinner() {
         if (this.insideBlackPieceCount < 3 && this.state === "moving") {
-            // message white won
+            this.gamePhase.textContent = "White won";
+            this.message.textContent = "Black only has" + this.insideBlackPieceCount + " pieces";
             this.winner = 'w';
         } else if (this.insideWhitePieceCount < 3 && this.state === 'moving') {
-            // message black won
+            this.gamePhase.textContent = "Black won";
+            this.message.textContent = "White only has" + this.insideWhitePieceCount + " pieces";
             this.winner = 'b';
         }
         return this.winner;
@@ -138,13 +142,14 @@ class Game {
 
     forfeit() {
         if (this.curPlayer === 'w') {
-            // message white forfeit so black won
+            this.message.textContent  = "White forfeit";
+            this.gamePhase.textContent = "Black won";
             this.winner = 'b';
-        } else if (this.curPlayer === 'b') {
-            // message black forfeit so white won
+        }
+        else {
+            this.message.textContent = "Black forfeit";
+            this.gamePhase.textContent = "White won";
             this.winner = 'w';
-        } else {
-            // message no game to forfeit
         }
     }
 }

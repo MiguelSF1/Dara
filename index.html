@@ -3,10 +3,11 @@
 
     <head>
         <link rel="stylesheet" href="styles.css">
-        <script src="script.js"></script>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Play Dara</title>
+        <script src="script.js"></script>
+        <script src="game.js"></script>
     </head>
 
     <body>
@@ -28,87 +29,30 @@
             <ul class="centered-text">                    
                 <li class="button"><a href="javascript:openContent('instructions-section')">Instructions</a></li>
                 <li class="button"><a href="javascript:openContent('config-section')">Configuration</a></li>
-                <li class="button"><a href="javascript:startGame()">Start game</a></li>
-                <li class="button"><a href="javascript:forfeitGame()">Forfeit</a></li>
+                <li id="start-game" class="button"><a href="javascript:startGame()">Start game</a></li>
+                <li id="forfeit" class="button"><a href="javascript:forfeitGame()">Forfeit</a></li>
                 <li class="button"><a href="javascript:openContent('leaderboard-section')">Leaderboard</a></li>
             </ul>
             <hr>
         </section>
 
         <section id="game-section" class="logged-in centered">
+
             <div id="game-phase">
-                <h2 id="game-phase-text">Placing pieces</h2>
+                <h2 id="game-phase-text"></h2>
             </div>
 
             <div id="white-pieces">
-                <div class="white-piece"></div>
-                <div class="white-piece"></div>
-                <div class="white-piece"></div>
-                <div class="white-piece"></div>
-                <div class="white-piece"></div>
-                <div class="white-piece"></div>
-                <div class="white-piece"></div>
-                <div class="white-piece"></div>
-                <div class="white-piece"></div>
-                <div class="white-piece"></div>
-                <div class="white-piece"></div>
-                <div class="white-piece"></div>
             </div>
+
             <div id="board">
-                <div class="box"></div>
-                <div class="box"></div>
-                <div class="box"></div>
-                <div class="box"></div>
-                <div class="box"></div>
-                <div class="box"></div>
-                <div class="box"></div>
-                <div class="box"></div>
-                <div class="box"></div>
-                <div class="box"></div>
-                <div class="box"></div>
-                <div class="box"></div>
-                <div class="box"></div>
-                <div class="box"></div>
-                <div class="box"></div>
-                <div class="box"></div>
-                <div class="box"></div>
-                <div class="box"></div>
-                <div class="box"></div>
-                <div class="box"></div>
-                <div class="box"></div>
-                <div class="box"></div>
-                <div class="box"></div>
-                <div class="box"></div>
-                <div class="box"></div>
-                <div class="box"></div>
-                <div class="box"></div>
-                <div class="box"></div>
-                <div class="box"></div>
-                <div class="box"></div>
-                <div class="box"></div>
-                <div class="box"></div>
-                <div class="box"></div>
-                <div class="box"></div>
-                <div class="box"></div>
-                <div class="box"></div>
             </div>
+
             <div id="black-pieces">
-                <div class="black-piece"></div>
-                <div class="black-piece"></div>
-                <div class="black-piece"></div>
-                <div class="black-piece"></div>
-                <div class="black-piece"></div>
-                <div class="black-piece"></div>
-                <div class="black-piece"></div>
-                <div class="black-piece"></div>
-                <div class="black-piece"></div>
-                <div class="black-piece"></div>
-                <div class="black-piece"></div>
-                <div class="black-piece"></div>
             </div>
             
             <div id="game-message">
-                <h2 id="game-message-text">White turn</h2>
+                <h2 id="game-message-text"></h2>
             </div>
 
         </section>
