@@ -3,12 +3,11 @@ class Game {
     constructor(rows, columns, curPlayer) {
         this.rows = rows;
         this.columns = columns;
-        this.curPlayer = curPlayer;
         this.board = [];
-        this.state = "placing";
-        this.insideWhitePieceCount = 0;
-        this.insideBlackPieceCount = 0;
-        this.winner = ' ';
+        this._state = "placing";
+        this._insideWhitePieceCount = 0;
+        this._insideBlackPieceCount = 0;
+        this._winner = ' ';
         this.message = document.getElementById("game-message-text");
         this.gamePhase = document.getElementById("game-phase-text");
 
@@ -18,62 +17,91 @@ class Game {
                 this.board[i].push(' ');
             }
         }
+        this._curPlayer = curPlayer;
+    }
+
+
+    get curPlayer() {
+        return this._curPlayer;
+    }
+
+    get state() {
+        return this._state;
+    }
+
+    get insideWhitePieceCount() {
+        return this._insideWhitePieceCount;
+    }
+
+    get insideBlackPieceCount() {
+        return this._insideBlackPieceCount;
+    }
+
+    get winner() {
+        return this._winner;
+    }
+
+    switchState() {
+        this._state = "moving";
     }
 
     switchTurn() {
-        if (this.curPlayer === 'w') {
-            this.curPlayer = 'b';
+        if (this._curPlayer === 'w') {
+            this._curPlayer = 'b';
         } else {
-          this.curPlayer = 'w';
+          this._curPlayer = 'w';
         }
     }
     
     placePiece(row, column) {
-        if (this.state === "placing" && this.board[row][column] === ' ') {
-            this.board[row][column] = this.curPlayer;
-            if (this.curPlayer === 'w') {
-                this.insideWhitePieceCount++;
+        if (this._state === "placing" && this.board[row][column] === ' ') {
+            this.board[row][column] = this._curPlayer;
+            if (this._curPlayer === 'w') {
+                this._insideWhitePieceCount++;
             } else {
-                this.insideBlackPieceCount++;
+                this._insideBlackPieceCount++;
             }
             this.switchTurn();
-        } else if (this.state === "placing" && this.board[row][column] !== ' ') {
-            this.message.textContent = "Cant place piece there";
-        }
+            return true;
+        } 
+        this.message.textContent = "Cant place piece";
+        return false;
     }
 
     movePiece(startingRow, startingColumn, endingRow, endingColumn) {
-        if (this.state === "moving" && this.isValidMove(startingRow, startingColumn, endingRow, endingColumn)) {
+        if (this._state === "moving" && this.isValidMove(startingRow, startingColumn, endingRow, endingColumn)) {
             this.board[endingRow][endingColumn] = this.board[startingRow][startingColumn];
             this.board[startingRow][startingColumn] = ' ';
             if (this.checkInLinePiece(endingRow, endingColumn)) {
                 this.message.textContent = "Can remove a piece";
-                // call removePiece
+                return "remove";
             }
             this.switchTurn();
-        } else {
-            this.message.textContent = "Illegal move";
-        }
+            return "moved";
+        } 
+        this.message.textContent = "Illegal move";
+        return "illegal";
     }
 
     removePiece(row, column) {
         if (this.board[row][column] !== ' ') {
             if (this.board[row][column] === 'w') {
-                this.insideWhitePieceCount--;
+                this._insideWhitePieceCount--;
             } else {
-                this.insideBlackPieceCount--;
+                this._insideBlackPieceCount--;
             }
             this.board[row][column] = ' ';
+            this.message.textContent = "Piece removed";
+            return true;
         }
-        else {
-            this.message.textContent = "No piece there";
-        }
+        this.message.textContent = "No piece there";
+        return false;
     }
 
     isValidMove(startingRow, startingColumn, endingRow, endingColumn) {
         const piece = this.board[startingRow][startingColumn];
 
-        if (piece !== this.curPlayer || this.board[endingRow][endingColumn] !== ' ') {
+        if (piece !== this._curPlayer || this.board[endingRow][endingColumn] !== ' ') {
             return false;
         }
 
@@ -128,28 +156,28 @@ class Game {
     }
 
     gameWinner() {
-        if (this.insideBlackPieceCount < 3 && this.state === "moving") {
+        if (this._insideBlackPieceCount < 3 && this._state === "moving") {
             this.gamePhase.textContent = "White won";
-            this.message.textContent = "Black only has" + this.insideBlackPieceCount + " pieces";
-            this.winner = 'w';
-        } else if (this.insideWhitePieceCount < 3 && this.state === 'moving') {
+            this.message.textContent = "Black only has" + this._insideBlackPieceCount + " pieces";
+            this._winner = 'w';
+        } else if (this._insideWhitePieceCount < 3 && this._state === 'moving') {
             this.gamePhase.textContent = "Black won";
-            this.message.textContent = "White only has" + this.insideWhitePieceCount + " pieces";
-            this.winner = 'b';
+            this.message.textContent = "White only has" + this._insideWhitePieceCount + " pieces";
+            this._winner = 'b';
         }
-        return this.winner;
+        return this._winner;
     }
 
     forfeit() {
-        if (this.curPlayer === 'w') {
+        if (this._curPlayer === 'w') {
             this.message.textContent  = "White forfeit";
             this.gamePhase.textContent = "Black won";
-            this.winner = 'b';
+            this._winner = 'b';
         }
         else {
             this.message.textContent = "Black forfeit";
             this.gamePhase.textContent = "White won";
-            this.winner = 'w';
+            this._winner = 'w';
         }
     }
 }

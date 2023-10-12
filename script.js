@@ -97,9 +97,21 @@ function makeBoard(rows, cols) {
     }
 }
 
-// for some reason game runs here
+// for some reason game runs here also on click I play my turn check for win and play computer turn check for win
+let pieceClicked = false;
+
 function onBoxClick(e) {
     const boxPos = e.target.getAttribute("box-id");
     const piece = document.getElementById("white-pieces").firstChild;
+    piece.addEventListener("click", onPieceClick);
     e.target.append(piece);
+    if (pieceClicked) {
+
+    }
+}
+
+function onPieceClick(e) {
+    pieceClicked = true;
+    const boxPos = e.target.parentElement.getAttribute("box-id");
+
 }
