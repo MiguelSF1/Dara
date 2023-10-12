@@ -27,11 +27,11 @@
 
         <section id="command-panel-section" class="logged-in">
             <ul class="centered-text">                    
-                <li class="button"><a href="javascript:openContent('instructions-section')">Instructions</a></li>
-                <li class="button"><a href="javascript:openContent('config-section')">Configuration</a></li>
-                <li id="start-game" class="button"><a href="javascript:startGame()">Start game</a></li>
-                <li id="forfeit" class="button"><a href="javascript:forfeitGame()">Forfeit</a></li>
-                <li class="button"><a href="javascript:openContent('leaderboard-section')">Leaderboard</a></li>
+                <li class="menu"><button class="button" onclick="openContent('instructions-section')">Instructions</button></li>
+                <li id="config" class="menu"><button class="button" onclick="openContent('config-section')">Configuration</button></li>
+                <li id="start-game" class="menu"><button class="button" onclick="startGame()">Start game</button></li>
+                <li id="forfeit" class="menu"><button class="button" onclick="forfeitGame()">Forfeit</button></li>
+                <li class="menu"><button class="button" onclick="openContent('leaderboard-section')">Leaderboard</button></li>
             </ul>
             <hr>
         </section>
@@ -58,7 +58,7 @@
         </section>
 
         <section id="config-section" class="logged-in centered window hidden">
-            <a href="javascript:closeContent('config-section')" class="close button">X</a>
+            <button onclick="closeContent('config-section')" class="close button">X</button>
             <h2 class="centered-text">Game configuration</h2>
             <hr>
 
@@ -129,9 +129,9 @@
         </section>
 
         <section id="instructions-section" class="centered window hidden">
-            <a href="javascript:closeContent('instructions-section')" class="close button">X</a>
-            <a href="javascript:changeInstructionsPage()" class="button">Game rules</a>
-            <a href="javascript:changeInstructionsPage()" class="button">How to play</a>
+            <button onclick="closeContent('instructions-section')" class="close button">X</button>
+            <button onclick="changeInstructionsPage()" class="button">Game rules</button>
+            <button onclick="changeInstructionsPage()" class="button">How to play</button>
             <div id="game-rules-div">
                 <h2 class="centered-text">Game rules</h2>
                 <hr>
@@ -206,7 +206,7 @@
         </section>
 
         <section id="leaderboard-section" class="centered window hidden">
-            <a href="javascript:closeContent('leaderboard-section')" class="close button">X</a>
+            <button onclick="closeContent('leaderboard-section')" class="close button">X</button>
             <h2 class="centered-text">Leaderboard</h2>
             <hr>
         </section>

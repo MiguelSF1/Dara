@@ -45,12 +45,14 @@ function startGame() {
     const message = document.getElementById("game-message-text");
     const startGame = document.getElementById("start-game");
     const forfeit = document.getElementById("forfeit");
+    const config = document.getElementById("config");
     const board = document.getElementById("board");
 
     game = new Game(parseInt(boardSize[0]), parseInt(boardSize[2]), curPlayer);
 
     startGame.style.display = "none";
     forfeit.style.display = "inline-block";
+    config.style.display = "none";
     gamePhase.textContent = game.state + " pieces | " + curPlayer + " turn"; // move to game
 
     makeBoard(parseInt(boardSize[0]), parseInt(boardSize[2]));
@@ -61,15 +63,17 @@ function startGame() {
 function forfeitGame() {
     const startGame = document.getElementById("start-game");
     const forfeit = document.getElementById("forfeit");
+    const config = document.getElementById("config");
     const board = document.getElementById("board");
     const whitePieces = document.getElementById("white-pieces");
     const blackPieces = document.getElementById("black-pieces");
     startGame.style.display = "inline-block";
     forfeit.style.display = "none";
+    config.style.display = "inline-block";
     board.innerHTML = "";
     whitePieces.innerHTML = "";
     blackPieces.innerHTML = "";
-    game.forfeit();
+    game.forfeit(); // make forfeit here
 }
 
 function makeBoard(rows, cols) {

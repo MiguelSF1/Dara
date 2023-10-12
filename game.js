@@ -4,6 +4,7 @@ class Game {
         this.rows = rows;
         this.columns = columns;
         this.board = [];
+        this._curPlayer = curPlayer;
         this._state = "placing";
         this._insideWhitePieceCount = 0;
         this._insideBlackPieceCount = 0;
@@ -17,7 +18,7 @@ class Game {
                 this.board[i].push(' ');
             }
         }
-        this._curPlayer = curPlayer;
+        
     }
 
 
