@@ -1,108 +1,229 @@
 class Game {
-
-    constructor(rows, columns, curPlayer) {
-        this.rows = rows;
-        this.columns = columns;
-        this.board = [];
-        this._curPlayer = curPlayer;
-        this._state = "placing";
+    constructor(rows, columns, curPlayer, playerColor) {
+        this._gamePhaseText = document.getElementById("game-phase-text");
+        this._gameMessages = document.getElementById("game-messages");
+        this._whitePieces = document.getElementById("white-pieces");
+        this._blackPieces = document.getElementById("black-pieces");
+        this._htmlBoard = document.getElementById("board");
+        this._startGame = document.getElementById("start-game");
+        this._forfeit = document.getElementById("forfeit");
+        this._config = document.getElementById("config");
         this._insideWhitePieceCount = 0;
         this._insideBlackPieceCount = 0;
-        this._winner = ' ';
-        this.message = document.getElementById("game-message-text");
-        this.gamePhase = document.getElementById("game-phase-text");
+        this._state = "placing";
+        this._winner = " ";
+        this._rows = rows;
+        this._columns = columns;
+        this._curPlayer = curPlayer;
+        this._playerColor = playerColor;
+        this._prevWhiteMove = [-1, -1, -1, -1];
+        this._prevBlackMove = [-1, -1, -1, -1];
+        this._board = [];
+
+        for (let i = 0; i < 12; i++) {
+            const whitePiece = document.createElement("div");
+            const blackPiece = document.createElement("div");
+            whitePiece.classList.add("white-piece");
+            blackPiece.classList.add("black-piece");
+            this._whitePieces.append(whitePiece);
+            this._blackPieces.append(blackPiece);
+        }
 
         for (let i = 0; i < rows; i++) {
-            this.board.push([]);
+            this._board.push([]);
             for (let j = 0; j < columns; j++) {
-                this.board[i].push(' ');
+                this._board[i].push(" ");
+                const square = document.createElement("div");
+                square.id = i.toString() + "x" + j.toString();
+                square.classList.add("box");
+                square.addEventListener("click", getPlayerMove);
+                this._htmlBoard.append(square);
             }
         }
-        
-    }
 
-
-    get curPlayer() {
-        return this._curPlayer;
+        this._startGame.style.display = "none";
+        this._forfeit.style.display = "inline-block";
+        this._config.style.display = "none";
+        this._gamePhaseText.textContent = this._state + " pieces | " + this._curPlayer + " turn";
     }
 
     get state() {
         return this._state;
     }
 
-    get insideWhitePieceCount() {
-        return this._insideWhitePieceCount;
+    get curPlayer() {
+        return this._curPlayer;
     }
 
-    get insideBlackPieceCount() {
-        return this._insideBlackPieceCount;
+    get board() {
+        return this._board;
+    }
+    
+    get rows() {
+        return this._rows;
     }
 
-    get winner() {
-        return this._winner;
-    }
-
-    switchState() {
-        this._state = "moving";
+    get columns() {
+        return this._columns;
     }
 
     switchTurn() {
-        if (this._curPlayer === 'w') {
-            this._curPlayer = 'b';
+        if (this._curPlayer === "white") {
+            this._curPlayer = "black";
         } else {
-          this._curPlayer = 'w';
+            this._curPlayer = "white";
+        }
+        this._gamePhaseText.textContent = this._state + " pieces | " + this._curPlayer + " turn";
+    }
+
+    isPlayerTurn() {
+        return this._curPlayer === this._playerColor;
+    }
+
+    sendGameMessage(text) {
+        if (this.isPlayerTurn()) {
+            let message = document.createElement("h2");
+            message.textContent = text;
+            this._gameMessages.append(message);
         }
     }
-    
+
     placePiece(row, column) {
-        if (this._state === "placing" && this.board[row][column] === ' ') {
-            this.board[row][column] = this._curPlayer;
-            if (this._curPlayer === 'w') {
+        if (this._board[row][column] === " " && this.checkPieceLimit(-1, -1, row, column, this._curPlayer)) {
+            this._board[row][column] = this._curPlayer;
+            this.updateBoard([row, column]);
+            if (this._curPlayer === "white") {
                 this._insideWhitePieceCount++;
             } else {
                 this._insideBlackPieceCount++;
             }
+
+            if (this._insideBlackPieceCount + this._insideWhitePieceCount === 24) {
+                this._state = "moving";
+            }
+
             this.switchTurn();
             return true;
-        } 
-        this.message.textContent = "Cant place piece";
+        }
+
+        this.sendGameMessage("Illegal move from " + this._curPlayer);
         return false;
     }
 
     movePiece(startingRow, startingColumn, endingRow, endingColumn) {
-        if (this._state === "moving" && this.isValidMove(startingRow, startingColumn, endingRow, endingColumn)) {
-            this.board[endingRow][endingColumn] = this.board[startingRow][startingColumn];
-            this.board[startingRow][startingColumn] = ' ';
-            if (this.checkInLinePiece(endingRow, endingColumn)) {
-                this.message.textContent = "Can remove a piece";
-                return "remove";
-            }
-            this.switchTurn();
-            return "moved";
-        } 
-        this.message.textContent = "Illegal move";
-        return "illegal";
-    }
-
-    removePiece(row, column) {
-        if (this.board[row][column] !== ' ') {
-            if (this.board[row][column] === 'w') {
-                this._insideWhitePieceCount--;
+        if (this.isValidMove(startingRow, startingColumn, endingRow, endingColumn) && this.checkPieceLimit(startingRow, startingColumn, endingRow, endingColumn, this._curPlayer))  {
+            this._board[endingRow][endingColumn] = this._board[startingRow][startingColumn];
+            this._board[startingRow][startingColumn] = " ";
+            this.updateBoard([startingRow, startingColumn, endingRow, endingColumn]);
+            if (this._curPlayer === "white") {
+                this._prevWhiteMove = [endingRow, endingColumn, startingRow, startingColumn];
             } else {
-                this._insideBlackPieceCount--;
+                this._prevBlackMove = [endingRow, endingColumn, startingRow, startingColumn];
             }
-            this.board[row][column] = ' ';
-            this.message.textContent = "Piece removed";
+            if (this.checkInLinePiece(endingRow, endingColumn)) {
+                this.sendGameMessage(this._curPlayer + " can remove a piece");
+                this._state = "removing";
+            } else {
+                this.switchTurn();
+            }
             return true;
-        }
-        this.message.textContent = "No piece there";
+        } 
+
+        this.sendGameMessage("Illegal move from " + this._curPlayer);
         return false;
     }
 
-    isValidMove(startingRow, startingColumn, endingRow, endingColumn) {
-        const piece = this.board[startingRow][startingColumn];
+    removePiece(row, column) {
+        if (this._board[row][column] === this._curPlayer || this._board[row][column] === " ") {
+            this.sendGameMessage("Illegal move from " + this._curPlayer);
+            return false;
+        }
 
-        if (piece !== this._curPlayer || this.board[endingRow][endingColumn] !== ' ') {
+        this._board[row][column] = " ";
+        this.updateBoard([row, column]);
+        this._state = "moving";
+
+        if (this._curPlayer === "black") {
+            this._insideWhitePieceCount--;
+        } else {
+            this._insideBlackPieceCount--;
+        }
+
+        this.switchTurn();
+        return true;
+    }
+
+    updateBoard(move) {
+        if (this._state === "placing") {
+            let square = document.getElementById(move[0].toString() + "x" + move[1].toString());
+            let piece;
+            if (this._curPlayer === "white") {
+                piece = document.getElementById("white-pieces").firstChild;
+            } else {
+                piece = document.getElementById("black-pieces").firstChild;
+            }
+            square.append(piece);
+        } else if (this._state === "removing") {
+            let piece = document.getElementById(move[0].toString() + "x" + move[1].toString()).firstChild;
+            if (this._curPlayer === "white") {
+                document.getElementById("black-pieces").append(piece);
+            } else {
+                document.getElementById("white-pieces").append(piece);
+            }
+        } else {
+            let square = document.getElementById(move[2].toString() + "x" + move[3].toString());
+            let piece = document.getElementById(move[0].toString() + "x" + move[1].toString()).firstChild;
+            square.append(piece);
+        }
+    }
+
+    checkPieceLimit(startingRow, startingColumn, endingRow, endingColumn, curPlayer) {
+        let horizontalCount = 1;
+        for (let i = endingColumn + 1; i < this._columns; i++) {
+            if (this._board[endingRow][i] === curPlayer && !(startingRow === endingRow && startingColumn === i)) {
+                horizontalCount++;
+            } else {
+                break;
+            }
+        }
+        for (let i = endingColumn - 1; i >= 0; i--) {
+            if (this._board[endingRow][i] === curPlayer && !(startingRow === endingRow && startingColumn === i)) {
+                horizontalCount++;
+            } else {
+                break;
+            }
+        }
+        if (horizontalCount > 3) {
+            return false;
+        }
+
+        let verticalCount = 1;
+        for (let i = endingRow + 1; i < this._rows; i++) {
+            if (this._board[i][endingColumn] === curPlayer && !(startingRow === i && startingColumn === endingColumn)) {
+                verticalCount++;
+            } else {
+                break;
+            }
+        }
+        for (let i = endingRow - 1; i >= 0; i--) {
+            if (this._board[i][endingColumn] === curPlayer && !(startingRow === i && startingColumn === endingColumn)) {
+                verticalCount++;
+            } else {
+                break;
+            }
+        }
+
+        return verticalCount <= 3;
+    }
+
+    isValidMove(startingRow, startingColumn, endingRow, endingColumn) {
+        if (this.curPlayer === "white" && this._prevWhiteMove[0] === startingRow && this._prevWhiteMove[1] === startingColumn && this._prevWhiteMove[2] === endingRow && this._prevWhiteMove[3] === endingColumn) {
+            return false;
+        }
+        if (this.curPlayer === "black" && this._prevBlackMove[0] === startingRow && this._prevBlackMove[1] === startingColumn && this._prevBlackMove[2] === endingRow && this._prevBlackMove[3] === endingColumn) {
+            return false;
+        }
+        if (this._board[endingRow][endingColumn] !== " " || this._board[startingRow][startingColumn] !== this._curPlayer) {
             return false;
         }
 
@@ -113,72 +234,171 @@ class Game {
     }
 
     checkInLinePiece(row, column) {
-        const piece = this.board[row][column];
-
-        // Check horizontally
         let horizontalCount = 1;
-        for (let i = column + 1; i < this.columns; i++) {
-            if (this.board[row][i] === piece) {
+        for (let i = column + 1; i < this._columns; i++) {
+            if (this._board[row][i] === this._curPlayer) {
                 horizontalCount++;
             } else {
                 break;
             }
         }
         for (let i = column - 1; i >= 0; i--) {
-            if (this.board[row][i] === piece) {
+            if (this._board[row][i] === this._curPlayer) {
                 horizontalCount++;
             } else {
                 break;
             }
         }
-
-        if (horizontalCount >= 3) {
+        if (horizontalCount === 3) {
             return true;
         }
 
-        // Check vertically
         let verticalCount = 1;
-        for (let i = row + 1; i < this.rows; i++) {
-            if (this.board[i][column] === piece) {
+        for (let i = row + 1; i < this._rows; i++) {
+            if (this._board[i][column] === this._curPlayer) {
                 verticalCount++;
             } else {
                 break;
             }
         }
         for (let i = row - 1; i >= 0; i--) {
-            if (this.board[i][column] === piece) {
+            if (this._board[i][column] === this._curPlayer) {
                 verticalCount++;
             } else {
                 break;
             }
         }
-
-        return verticalCount >= 3;
+        return verticalCount === 3;
     }
 
-    gameWinner() {
-        if (this._insideBlackPieceCount < 3 && this._state === "moving") {
-            this.gamePhase.textContent = "White won";
-            this.message.textContent = "Black only has" + this._insideBlackPieceCount + " pieces";
-            this._winner = 'w';
-        } else if (this._insideWhitePieceCount < 3 && this._state === 'moving') {
-            this.gamePhase.textContent = "Black won";
-            this.message.textContent = "White only has" + this._insideWhitePieceCount + " pieces";
-            this._winner = 'b';
+    checkGameOver() {
+        if (this._winner !== " ") {
+            return true;
         }
-        return this._winner;
+        if (this._state === "placing") {
+            return false;
+        }
+        if (this._insideWhitePieceCount < 3) {
+            this._winner = "black";
+            return true;
+        }
+        if (this._insideBlackPieceCount < 3) {
+            this._winner = "white";
+            return true;
+        }
+
+        let whiteHasMove = false;
+        let blackHasMove = false;
+        for (let i = 0; i < this._rows; i++) {
+            for (let j = 0; j < this._columns; j++) {
+                if (this._board[i][j] !== " ") {
+                    let playerMoveColor = this._board[i][j];
+                    if (j + 1 < this._columns && this._board[i][j + 1] === " " && this.checkPieceLimit(i, j, i, j + 1, playerMoveColor)) {
+                        if (playerMoveColor === "white" && !(this._prevWhiteMove[0] === i && this._prevWhiteMove[1] === j && this._prevWhiteMove[2] === i && this._prevWhiteMove[3] === j + 1)) {
+                            whiteHasMove = true;
+                        } else if (playerMoveColor === "black" && !(this._prevBlackMove[0] === i && this._prevBlackMove[1] === j && this._prevBlackMove[2] === i && this._prevBlackMove[3] === j + 1)) {
+                            blackHasMove = true;
+                        }
+                    } else if (j - 1 >= 0 && this._board[i][j - 1] === " " && this.checkPieceLimit(i, j, i, j - 1, playerMoveColor)) {
+                        if (playerMoveColor === "white" && !(this._prevWhiteMove[0] === i && this._prevWhiteMove[1] === j && this._prevWhiteMove[2] === i && this._prevWhiteMove[3] === j - 1)) {
+                            whiteHasMove = true;
+                        } else if (playerMoveColor === "black" && !(this._prevBlackMove[0] === i && this._prevBlackMove[1] === j && this._prevBlackMove[2] === i && this._prevBlackMove[3] === j - 1)) {
+                            blackHasMove = true;
+                        }
+                    } else if (i + 1 < this._rows && this._board[i + 1][j] === " " && this.checkPieceLimit(i, j, i + 1, j, playerMoveColor)) {
+                        if (playerMoveColor === "white" && !(this._prevWhiteMove[0] === i && this._prevWhiteMove[1] === j && this._prevWhiteMove[2] === i + 1 && this._prevWhiteMove[3] === j)) {
+                            whiteHasMove = true;
+                        } else if (playerMoveColor === "black" && !(this._prevBlackMove[0] === i && this._prevBlackMove[1] === j && this._prevBlackMove[2] === i + 1 && this._prevBlackMove[3] === j)) {
+                            blackHasMove = true;
+                        }
+                    } else if (i - 1 >= 0 && this._board[i - 1][j] === " " && this.checkPieceLimit(i, j, i - 1, j, playerMoveColor)) {
+                        if (playerMoveColor === "white" && !(this._prevWhiteMove[0] === i && this._prevWhiteMove[1] === j && this._prevWhiteMove[2] === i - 1 && this._prevWhiteMove[3] === j)) {
+                            whiteHasMove = true;
+                        } else if (playerMoveColor === "black" && !(this._prevBlackMove[0] === i && this._prevBlackMove[1] === j && this._prevBlackMove[2] === i - 1 && this._prevBlackMove[3] === j)) {
+                            blackHasMove = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (whiteHasMove && blackHasMove) {
+            return false;
+        }
+        if (!whiteHasMove && !blackHasMove) {
+            if (this._curPlayer === "white") {
+                this._winner = "black";
+            } else {
+                this._winner = "white";
+            }
+            return true;
+        }
+        if (!whiteHasMove) {
+            this._winner = "black";
+            return true;
+        }
+        this._winner = "white";
+        return true;
     }
 
-    forfeit() {
-        if (this._curPlayer === 'w') {
-            this.message.textContent  = "White forfeit";
-            this.gamePhase.textContent = "Black won";
-            this._winner = 'b';
+    findPieceInLine(startingRow, startingColumn, endingRow, endingColumn) {
+        let horizontalCount = 1;
+        for (let i = endingColumn + 1; i < this._columns; i++) {
+            if (this._board[endingRow][i] === this._curPlayer && (startingRow !== endingRow || startingColumn !== i)) {
+                horizontalCount++;
+            } else {
+                break;
+            }
         }
-        else {
-            this.message.textContent = "Black forfeit";
-            this.gamePhase.textContent = "White won";
-            this._winner = 'w';
+        for (let i = endingColumn - 1; i >= 0; i--) {
+            if (this._board[endingRow][i] === this._curPlayer && (startingRow !== endingRow || startingColumn !== i)) {
+                horizontalCount++;
+            } else {
+                break;
+            }
         }
+        if (horizontalCount === 3) {
+            return true;
+        }
+
+        let verticalCount = 1;
+        for (let i = endingRow + 1; i < this._rows; i++) {
+            if (this._board[i][endingColumn] === this._curPlayer && (startingRow !== i || startingColumn !== endingColumn)) {
+                verticalCount++;
+            } else {
+                break;
+            }
+        }
+        for (let i = endingRow - 1; i >= 0; i--) {
+            if (this._board[i][endingColumn] === this._curPlayer && (startingRow !== i || startingColumn !== endingColumn)) {
+                verticalCount++;
+            } else {
+                break;
+            }
+        }
+        return verticalCount === 3;
+    }
+
+    forfeitGame() {
+        if (this._playerColor === "white") {
+            this._winner = "black";
+        } else {
+            this._winner = "white";
+        }
+        this._gamePhaseText.textContent = this._playerColor + " forfeit ";
+    }
+
+    gameOver() {
+        this.endGame();
+        this._gamePhaseText.textContent = this._winner + " wins";
+    }
+    endGame() {
+        this._startGame.style.display = "inline-block";
+        this._forfeit.style.display = "none";
+        this._config.style.display = "inline-block";
+        this._htmlBoard.innerHTML = "";
+        this._whitePieces.innerHTML = "";
+        this._blackPieces.innerHTML = "";
+        this._gameMessages.innerHTML = "";
     }
 }

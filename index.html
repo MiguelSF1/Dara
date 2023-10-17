@@ -5,9 +5,7 @@
         <link rel="stylesheet" href="styles.css">
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Play Dara</title>
-        <script src="script.js"></script>
-        <script src="game.js"></script>
+        <title>Play Dara!</title>
     </head>
 
     <body>
@@ -30,7 +28,7 @@
                 <li class="menu"><button class="button" onclick="openContent('instructions-section')">Instructions</button></li>
                 <li id="config" class="menu"><button class="button" onclick="openContent('config-section')">Configuration</button></li>
                 <li id="start-game" class="menu"><button class="button" onclick="startGame()">Start game</button></li>
-                <li id="forfeit" class="menu"><button class="button" onclick="forfeitGame()">Forfeit</button></li>
+                <li id="forfeit" class="menu"><button class="button" onclick="game.forfeitGame()">Forfeit</button></li>
                 <li class="menu"><button class="button" onclick="openContent('leaderboard-section')">Leaderboard</button></li>
             </ul>
             <hr>
@@ -51,8 +49,7 @@
             <div id="black-pieces">
             </div>
             
-            <div id="game-message">
-                <h2 id="game-message-text"></h2>
+            <div id="game-messages">
             </div>
 
         </section>
@@ -211,6 +208,9 @@
             <hr>
         </section>
 
+        <script src="index.js"></script>
+        <script src="script.js"></script>
+        <script src="game.js"></script>
     </body>
 
 </html>
