@@ -4,13 +4,14 @@ function startGame() {
     const columns = parseInt(getSelectedValue("board-size")[2]);
     const curPlayer = getSelectedValue("start-color");
     const playerColor = getSelectedValue("pick-color");
-    game = new Game(rows, columns, curPlayer, playerColor);
+    const opponent = getSelectedValue("play-against");
+    game = new Game(rows, columns, curPlayer, playerColor, opponent);
 
     gameLoop();
 }
 
 function gameLoop() {
-    if (!game.isPlayerTurn()) {
+    if (!game.isPlayerTurn() && game.opponent === "computer") {
         makeAiMove();
     }
 

@@ -1,5 +1,5 @@
 class Game {
-    constructor(rows, columns, curPlayer, playerColor) {
+    constructor(rows, columns, curPlayer, playerColor, opponent) {
         this._gamePhaseText = document.getElementById("game-phase-text");
         this._gameMessages = document.getElementById("game-messages");
         this._whitePieces = document.getElementById("white-pieces");
@@ -16,6 +16,7 @@ class Game {
         this._columns = columns;
         this._curPlayer = curPlayer;
         this._playerColor = playerColor;
+        this._opponent = opponent;
         this._prevWhiteMove = [-1, -1, -1, -1];
         this._prevBlackMove = [-1, -1, -1, -1];
         this._board = [];
@@ -55,6 +56,10 @@ class Game {
         return this._curPlayer;
     }
 
+    get opponent() {
+        return this._opponent;
+    }
+
     get board() {
         return this._board;
     }
@@ -81,11 +86,9 @@ class Game {
     }
 
     sendGameMessage(text) {
-        if (this.isPlayerTurn()) {
-            let message = document.createElement("h2");
-            message.textContent = text;
-            this._gameMessages.append(message);
-        }
+        let message = document.createElement("h2");
+        message.textContent = text;
+        this._gameMessages.append(message);
     }
 
     placePiece(row, column) {
@@ -106,7 +109,9 @@ class Game {
             return true;
         }
 
-        this.sendGameMessage("Illegal move from " + this._curPlayer);
+        if (this.isPlayerTurn()) {
+            this.sendGameMessage("Illegal move from " + this._curPlayer);
+        }
         return false;
     }
 
@@ -129,13 +134,17 @@ class Game {
             return true;
         } 
 
-        this.sendGameMessage("Illegal move from " + this._curPlayer);
+        if (this.isPlayerTurn()) {
+            this.sendGameMessage("Illegal move from " + this._curPlayer);
+        }
         return false;
     }
 
     removePiece(row, column) {
         if (this._board[row][column] === this._curPlayer || this._board[row][column] === " ") {
-            this.sendGameMessage("Illegal move from " + this._curPlayer);
+            if (this.isPlayerTurn()) {
+                this.sendGameMessage("Illegal move from " + this._curPlayer);
+            }
             return false;
         }
 
@@ -158,17 +167,17 @@ class Game {
             let square = document.getElementById(move[0].toString() + "x" + move[1].toString());
             let piece;
             if (this._curPlayer === "white") {
-                piece = document.getElementById("white-pieces").firstChild;
+                piece = this._whitePieces.firstChild;
             } else {
-                piece = document.getElementById("black-pieces").firstChild;
+                piece = this._blackPieces.firstChild;
             }
             square.append(piece);
         } else if (this._state === "removing") {
             let piece = document.getElementById(move[0].toString() + "x" + move[1].toString()).firstChild;
             if (this._curPlayer === "white") {
-                document.getElementById("black-pieces").append(piece);
+                this._blackPieces.append(piece);
             } else {
-                document.getElementById("white-pieces").append(piece);
+                this._whitePieces.append(piece);
             }
         } else {
             let square = document.getElementById(move[2].toString() + "x" + move[3].toString());
