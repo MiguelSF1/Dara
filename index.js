@@ -9,8 +9,8 @@ function closeContent(id) {
 }
 
 function changeInstructionsPage() {
-    let gameRules = document.getElementById("game-rules-div");
-    let howToPlay = document.getElementById("how-to-play-div");
+    let gameRules = document.getElementById("game-rules");
+    let howToPlay = document.getElementById("how-to-play");
 
     if (gameRules.style.display !== "none") {
         gameRules.style.display = "none";
@@ -31,6 +31,26 @@ function getSelectedValue(name) {
     }
 
     return null;
+}
+
+function orderLeaderboard(a, b) {
+    if (a.wins > b.wins) {
+      return -1;
+    }
+
+    if (a.wins < b.wins) {
+      return 1;
+    }
+
+    if (a.defeats > b.defeats) {
+        return 1;
+    }
+
+    if (a.defeats < b.defeats) {
+        return -1;
+    }
+
+    return 0;
 }
 
 function getRandomInt(min, max) {

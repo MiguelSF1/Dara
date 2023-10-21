@@ -3,6 +3,9 @@
 
     <head>
         <link rel="stylesheet" href="styles.css">
+        <script src="index.js"></script>
+        <script src="script.js"></script>
+        <script src="game.js"></script>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Play Dara!</title>
@@ -23,194 +26,235 @@
             </form>
         </section>
 
-        <section id="command-panel-section" class="logged-in">
-            <ul class="centered-text">                    
-                <li class="menu"><button class="button" onclick="openContent('instructions-section')">Instructions</button></li>
-                <li id="config" class="menu"><button class="button" onclick="openContent('config-section')">Configuration</button></li>
-                <li id="start-game" class="menu"><button class="button" onclick="startGame()">Start game</button></li>
-                <li id="forfeit" class="menu"><button class="button" onclick="game.forfeitGame()">Forfeit</button></li>
-                <li class="menu"><button class="button" onclick="openContent('leaderboard-section')">Leaderboard</button></li>
-            </ul>
-            <hr>
-        </section>
+        <div id="logged-in-access" class="logged-in">
 
-        <section id="game-section" class="logged-in centered">
-
-            <div id="game-phase">
-                <h2 id="game-phase-text"></h2>
-            </div>
-
-            <div id="white-pieces">
-            </div>
-
-            <div id="board">
-            </div>
-
-            <div id="black-pieces">
-            </div>
-            
-            <div id="game-messages">
-            </div>
-
-        </section>
-
-        <section id="config-section" class="logged-in centered window hidden">
-            <button onclick="closeContent('config-section')" class="close button">X</button>
-            <h2 class="centered-text">Game configuration</h2>
-            <hr>
-
-            <div id="board-size-div">
-                <h3>Board size</h3>
-                <label for="board-size-6x6" id="board-size-6x6-label">
-                    <input type="radio" id="board-size-6x6" name="board-size" value="6x6" checked>
-                    6x6
-                </label>
-                <label for="board-size-6x5" id="board-size-6x5-label">
-                    <input type="radio" id="board-size-6x5" name="board-size" value="6x5">
-                    6x5
-                </label>
-            </div>
-
-            <div id="play-against-div">
-                <h3>Play against</h3>
-                <label for="computer" id="computer-label">
-                    <input type="radio" id="computer" name="play-against" value="computer" checked>
-                    Computer
-                </label>
-                <label for="player" id="player-label">
-                    <input type="radio" id="player" name="play-against" value="player">
-                    Player
-                </label>
-            </div>
-
-            <div id="pick-color-div">
-                <h3>Pick your color</h3>
-                <label for="pick-white" id="pick-white-label">
-                    <input type="radio" id="pick-white" name="pick-color" value="white" checked>
-                    White
-                </label>
-                <label for="pick-black" id="pick-black-label">
-                    <input type="radio" id="pick-black" name="pick-color" value="black">
-                    Black
-                </label>
-            </div>
-
-            <div id="pick-starting-color">
-                <h3>Pick the starting color</h3>
-                <label for="start-white" id="start-white-label">
-                    <input type="radio" id="start-white" name="start-color" value="white" checked>
-                    White
-                </label>
-                <label for="start-black" id="start-black-label">
-                    <input type="radio" id="start-black" name="start-color" value="black">
-                    Black
-                </label>
-            </div>
-
-            <div id="difficulty-level-div">
-                <h3>Computer Difficulty level</h3>
-                <label for="easy" id="easy-label">
-                    <input type="radio" id="easy" name="difficulty-level" value="easy" checked>
-                    Easy
-                </label>
-                <label for="medium" id="medium-label">
-                    <input type="radio" id="medium" name="difficulty-level" value="medium">
-                    Medium
-                </label>
-                <label for="hard" id="hard-label">
-                    <input type="radio" id="hard" name="difficulty-level" value="hard">
-                    Hard
-                </label>
-            </div>
-   
-        </section>
-
-        <section id="instructions-section" class="centered window hidden">
-            <button onclick="closeContent('instructions-section')" class="close button">X</button>
-            <button onclick="changeInstructionsPage()" class="button">Game rules</button>
-            <button onclick="changeInstructionsPage()" class="button">How to play</button>
-            <div id="game-rules-div">
-                <h2 class="centered-text">Game rules</h2>
+            <section id="command-panel-section">
+                <ul class="centered-text">                    
+                    <li class="menu"><button class="button" onclick="openContent('instructions-section')">Instructions</button></li>
+                    <li id="config" class="menu"><button class="button" onclick="openContent('config-section')">Configuration</button></li>
+                    <li id="start-game" class="menu"><button class="button" onclick="startGame()">Start game</button></li>
+                    <li id="forfeit" class="menu"><button class="button" onclick="game.forfeitGame()">Forfeit</button></li>
+                    <li class="menu"><button class="button" onclick="openContent('leaderboard-section')">Leaderboard</button></li>
+                </ul>
                 <hr>
-                <div class="rule">
-                    <h3>Board and pieces</h3>
-                    <ul>
-                        <li>Dara is played on a board with 6 rows x 5 columns</li>
-                        <li>Other dimensions are possible, such as 6 x 6</li>
-                        <li>Each of the 2 players has 12 pieces</li>
-                        <li>One player plays with black squares, another with white</li>
-                        <li>All 22 pieces are always visible, on the board or outside</li>
-                        <li>Pieces outside the board are grouped by color, on each side</li>
-                    </ul>
-                </div>
-                <div class="rule">
-                    <h3>Basic rules</h3>
-                    <ul>
-                        <li>Players choose a color and decide who goes first</li>
-                        <li>Initially the board is empty</li>
-                        <li>The game has 2 phases:</li>
-                        <li>Phase 1 - Placing the pieces (drop)</li>
-                        <li>Phase 2 - Move the pieces (move)</li>
-                    </ul>
-                </div>
-                <div class="rule">
-                    <h3>Pieces in line</h3>
-                    <ul>
-                        <li>They are considered online</li>
-                        <li>sequences of 3 or more contiguous pieces</li>
-                        <li>horizontally or vertically (not diagonally)</li>
-                        <li>all the same color</li>
-                    </ul>
-                </div>
-                <div class="rule">
-                    <h3>Putting the pieces</h3>
-                    <ul>
-                        <li>Players alternately place one of their pieces on a free square</li>
-                        <li>No more than 3 pieces can be placed in a row</li>
-                        <li>There can be 3 pieces in a line (but it is not advantageous)</li>
-                    </ul>
-                </div>
-                <div class="rule">
-                    <h3>Moving the pieces</h3>
-                    <ul>
-                        <li>Each player alternately moves a piece of their color</li>
-                        <li>A piece can only be moved to an adjacent square</li>
-                        <li>Pieces moved only horizontally or vertically (not diagonally)</li>
-                        <li>A line of size 3 allows you to capture the opponent's piece</li>
-                        <li>In this case, remove an opponent's piece of your choice</li>
-                        <li>Only one piece is removed per move (even if several lines are formed)</li>
-                        <li>Lines with more than 3 pieces cannot be formed</li>
-                        <li>A piece cannot return to the position of the previous move</li>
-                        <li>You can only return to that space in subsequent moves</li>
-                    </ul>
-                </div>
-                <div class="rule">
-                    <h3>End of the game</h3>
-                    <ul>
-                        <li>The game ends when one player cannot win</li>
-                        <li>For example, if you only have 2 pieces on the board</li>
-                        <li>Or if you cannot make a valid move</li>
-                        <li>The player who cannot win loses the game</li>
-                    </ul>
-                </div>
-            </div>
+            </section>
 
-            <div id="how-to-play-div" class="hidden">
-                <h2 class="centered-text">How to play</h2>
+            <section id="logout-section" class="window">
+                <p id="logged-in-userId">Logged in as Player</p>
+                <button class="button">Logout</button>
+            </section> 
+
+            <section id="game-section">
+                <div class="flex-container">
+
+                    <div class="flex-top">
+                        <div id="game-phase" class="window">
+                            <h2 id="game-phase-text"></h2>
+                        </div> 
+                    </div>
+                    
+                    <div class="flex-bot">
+
+                        <div class="flex-left">
+                            <div id="white-pieces" class="pieces">
+                            </div>
+
+                            <div id="black-pieces" class="pieces">
+                            </div>
+                        </div>
+
+                        <div id="board">
+                        </div>
+                        
+                        <div id="game-messages" class="window">
+                        </div>
+
+                    </div>
+
+                </div>
+            </section>
+
+            <section id="config-section" class="centered window hidden">
+                <button onclick="closeContent('config-section')" class="close button">X</button>
+                <h2 class="centered-text">Game configuration</h2>
                 <hr>
-            </div>
 
-        </section>
+                <div>
+                    <h3>Board size</h3>
+                    <label for="board-size-7x7" id="board-size-7x7-label">
+                        <input type="radio" id="board-size-7x7" name="board-size" value="7x7">
+                        7x7
+                    </label>
+                    <label for="board-size-7x6" id="board-size-7x6-label">
+                        <input type="radio" id="board-size-7x6" name="board-size" value="7x6">
+                        7x6
+                    </label>
+                    <label for="board-size-6x6" id="board-size-6x6-label">
+                        <input type="radio" id="board-size-6x6" name="board-size" value="6x6" checked>
+                        6x6
+                    </label>
+                    <label for="board-size-6x5" id="board-size-6x5-label">
+                        <input type="radio" id="board-size-6x5" name="board-size" value="6x5">
+                        6x5
+                    </label>
+                </div>
 
-        <section id="leaderboard-section" class="centered window hidden">
-            <button onclick="closeContent('leaderboard-section')" class="close button">X</button>
-            <h2 class="centered-text">Leaderboard</h2>
-            <hr>
-        </section>
+                <div>
+                    <h3>Play against</h3>
+                    <label for="computer" id="computer-label">
+                        <input type="radio" id="computer" name="play-against" value="computer" checked>
+                        Computer
+                    </label>
+                    <label for="player" id="player-label">
+                        <input type="radio" id="player" name="play-against" value="player">
+                        Player
+                    </label>
+                </div>
 
-        <script src="index.js"></script>
-        <script src="script.js"></script>
-        <script src="game.js"></script>
+                <div>
+                    <h3>Pick your color</h3>
+                    <label for="pick-white" id="pick-white-label">
+                        <input type="radio" id="pick-white" name="pick-color" value="white" checked>
+                        White
+                    </label>
+                    <label for="pick-black" id="pick-black-label">
+                        <input type="radio" id="pick-black" name="pick-color" value="black">
+                        Black
+                    </label>
+                </div>
+
+                <div>
+                    <h3>Pick the starting color</h3>
+                    <label for="start-white" id="start-white-label">
+                        <input type="radio" id="start-white" name="start-color" value="white" checked>
+                        White
+                    </label>
+                    <label for="start-black" id="start-black-label">
+                        <input type="radio" id="start-black" name="start-color" value="black">
+                        Black
+                    </label>
+                </div>
+
+                <div>
+                    <h3>Computer Difficulty level</h3>
+                    <label for="easy" id="easy-label">
+                        <input type="radio" id="easy" name="difficulty-level" value="easy" checked>
+                        Easy
+                    </label>
+                    <label for="medium" id="medium-label">
+                        <input type="radio" id="medium" name="difficulty-level" value="medium">
+                        Medium
+                    </label>
+                    <label for="hard" id="hard-label">
+                        <input type="radio" id="hard" name="difficulty-level" value="hard">
+                        Hard
+                    </label>
+                </div>
+    
+            </section>
+
+            <section id="instructions-section" class="centered window hidden">
+                <button onclick="closeContent('instructions-section')" class="close button">X</button>
+                <button onclick="changeInstructionsPage()" class="button">Game rules</button>
+                <button onclick="changeInstructionsPage()" class="button">How to play</button>
+                <div id="game-rules">
+                    <h2 class="centered-text">Game rules</h2>
+                    <hr>
+                    <div class="rule">
+                        <h3>Board and pieces</h3>
+                        <ul>
+                            <li>Dara is played on a board with 6 rows x 5 columns</li>
+                            <li>Other dimensions are possible, such as 6 x 6</li>
+                            <li>Each of the 2 players has 12 pieces</li>
+                            <li>One player plays with black squares, another with white</li>
+                            <li>All 22 pieces are always visible, on the board or outside</li>
+                            <li>Pieces outside the board are grouped by color, on each side</li>
+                        </ul>
+                    </div>
+                    <div class="rule">
+                        <h3>Basic rules</h3>
+                        <ul>
+                            <li>Players choose a color and decide who goes first</li>
+                            <li>Initially the board is empty</li>
+                            <li>The game has 2 phases:</li>
+                            <li>Phase 1 - Placing the pieces (drop)</li>
+                            <li>Phase 2 - Move the pieces (move)</li>
+                        </ul>
+                    </div>
+                    <div class="rule">
+                        <h3>Pieces in line</h3>
+                        <ul>
+                            <li>They are considered online</li>
+                            <li>sequences of 3 or more contiguous pieces</li>
+                            <li>horizontally or vertically (not diagonally)</li>
+                            <li>all the same color</li>
+                        </ul>
+                    </div>
+                    <div class="rule">
+                        <h3>Putting the pieces</h3>
+                        <ul>
+                            <li>Players alternately place one of their pieces on a free square</li>
+                            <li>No more than 3 pieces can be placed in a row</li>
+                            <li>There can be 3 pieces in a line (but it is not advantageous)</li>
+                        </ul>
+                    </div>
+                    <div class="rule">
+                        <h3>Moving the pieces</h3>
+                        <ul>
+                            <li>Each player alternately moves a piece of their color</li>
+                            <li>A piece can only be moved to an adjacent square</li>
+                            <li>Pieces moved only horizontally or vertically (not diagonally)</li>
+                            <li>A line of size 3 allows you to capture the opponent's piece</li>
+                            <li>In this case, remove an opponent's piece of your choice</li>
+                            <li>Only one piece is removed per move (even if several lines are formed)</li>
+                            <li>Lines with more than 3 pieces cannot be formed</li>
+                            <li>A piece cannot return to the position of the previous move</li>
+                            <li>You can only return to that space in subsequent moves</li>
+                        </ul>
+                    </div>
+                    <div class="rule">
+                        <h3>End of the game</h3>
+                        <ul>
+                            <li>The game ends when one player cannot win</li>
+                            <li>For example, if you only have 2 pieces on the board</li>
+                            <li>Or if you cannot make a valid move</li>
+                            <li>The player who cannot win loses the game</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div id="how-to-play" class="hidden">
+                    <h2 class="centered-text">How to play</h2>
+                    <hr>
+                    <p class="rule">
+                        On this website you can select the configuration for the game on the configuration 
+                        button and play the game by clicking on start game, on the placing phase just click 
+                        on the squares where you want to drop the pieces and in the moving phase click on
+                        the piece and then the square you want to move it to.
+                    </p>
+                </div>
+
+            </section>
+
+            <section id="leaderboard-section" class="centered window hidden">
+                <button onclick="closeContent('leaderboard-section')" class="close button">X</button>
+                <h2 class="centered-text">Leaderboard</h2>
+                <hr>
+                
+                <table id="leaderboard" class="leaderboard-table">
+                    <tr>
+                        <th>Name</th>
+                        <th>Board Size</th>
+                        <th>Size</th>
+                        <th>Wins</th>
+                        <th>Defeats</th>
+                    </tr>
+                </table>     
+                   
+            </section>
+
+        </div>
+
     </body>
 
 </html>

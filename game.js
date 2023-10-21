@@ -30,21 +30,28 @@ class Game {
             this._blackPieces.append(blackPiece);
         }
 
-        for (let i = 0; i < rows; i++) {
+        let squareWidth = (600 / this._columns).toString() + "px";
+        let squareHeight = (600 / this._rows).toString() + "px";
+
+        for (let i = 0; i < this._rows; i++) {
             this._board.push([]);
-            for (let j = 0; j < columns; j++) {
+            for (let j = 0; j < this._columns; j++) {
                 this._board[i].push(" ");
                 const square = document.createElement("div");
                 square.id = i.toString() + "x" + j.toString();
-                square.classList.add("box");
+                square.style.width = squareWidth;
+                square.style.height = squareHeight;
+                square.classList.add("square");
                 square.addEventListener("click", getPlayerMove);
                 this._htmlBoard.append(square);
             }
         }
 
+        this._htmlBoard.style.gridTemplateColumns = "repeat(" + this._columns + ", 1fr)";
         this._startGame.style.display = "none";
         this._forfeit.style.display = "inline-block";
         this._config.style.display = "none";
+        this._gameMessages.style.display = "inline-block";
         this._gamePhaseText.textContent = this._state + " pieces | " + this._curPlayer + " turn";
     }
 
@@ -72,6 +79,14 @@ class Game {
         return this._columns;
     }
 
+    get winner() {
+        return this._winner;
+    }
+
+    get playerColor() {
+        return this._playerColor;
+    }
+
     switchTurn() {
         if (this._curPlayer === "white") {
             this._curPlayer = "black";
@@ -86,9 +101,11 @@ class Game {
     }
 
     sendGameMessage(text) {
-        let message = document.createElement("h2");
+        let message = document.createElement("h3");
         message.textContent = text;
         this._gameMessages.append(message);
+        this._gameMessages.append(document.createElement("hr"));
+        this._gameMessages.scrollTop = this._gameMessages.scrollHeight;
     }
 
     placePiece(row, column) {
@@ -398,10 +415,6 @@ class Game {
     }
 
     gameOver() {
-        this.endGame();
-        this._gamePhaseText.textContent = this._winner + " wins";
-    }
-    endGame() {
         this._startGame.style.display = "inline-block";
         this._forfeit.style.display = "none";
         this._config.style.display = "inline-block";
@@ -409,5 +422,7 @@ class Game {
         this._whitePieces.innerHTML = "";
         this._blackPieces.innerHTML = "";
         this._gameMessages.innerHTML = "";
+        this._gameMessages.style.display = "none";
+        this._gamePhaseText.textContent = this._winner + " wins";
     }
 }

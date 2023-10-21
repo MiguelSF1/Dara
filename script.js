@@ -1,4 +1,7 @@
+let username = "Player";
 let game;
+let leaderboard = [];
+
 function startGame() {
     const rows = parseInt(getSelectedValue("board-size")[0]);
     const columns = parseInt(getSelectedValue("board-size")[2]);
@@ -19,6 +22,7 @@ function gameLoop() {
         setTimeout(gameLoop, 1000);
     } else {
         game.gameOver();
+        updateLeaderboard();
     }
 }
 
@@ -129,4 +133,83 @@ function computerHardAi() {
     }
 
     return computerEasyAi();
+}
+
+
+function updateLeaderboard() {
+    let foundEntry = false;
+    for (let i = 0; i < leaderboard.length; i++) {
+        if (leaderboard[i].name === username && leaderboard[i].boardSize === game.rows.toString() + "x" + game.columns.toString()) {
+            foundEntry = true;
+            if (game.winner === game.playerColor) {
+                leaderboard[i].wins++;
+            } else {
+                leaderboard[i].defeats++;
+            }
+        } 
+    }
+
+    if (!foundEntry) {
+        if (game.winner === game.playerColor) {
+            leaderboard.push({
+                name: username,
+                boardSize: game.rows.toString() + "x" + game.columns.toString(),
+                wins: 1,
+                defeats: 0
+            });
+        } else {
+            leaderboard.push({
+                name: username,
+                boardSize: game.rows.toString() + "x" + game.columns.toString(),
+                wins: 0,
+                defeats: 1
+            });
+        }
+    }
+
+    const leaderboardHtml = document.getElementById("leaderboard");
+    leaderboardHtml.innerHTML = "";
+
+    let leaderboardHeader = document.createElement("tr");
+
+    let leaderboardName = document.createElement("th");
+    leaderboardName.textContent = "Name";
+    leaderboardHeader.append(leaderboardName);
+
+    let leaderboardBoardSize = document.createElement("th");
+    leaderboardBoardSize.textContent = "Board Size"
+    leaderboardHeader.append(leaderboardBoardSize);
+
+    let leaderboardWins = document.createElement("th");
+    leaderboardWins.textContent = "Wins";
+    leaderboardHeader.append(leaderboardWins);
+
+    let leaderboardDefeats = document.createElement("th");
+    leaderboardDefeats.textContent = "Defeats";
+    leaderboardHeader.append(leaderboardDefeats);
+
+    leaderboardHtml.append(leaderboardHeader);
+
+    leaderboard.sort(orderLeaderboard);
+    for (let i = 0; i < leaderboard.length; i++) {
+        let entry = document.createElement("tr");
+
+        let entryName = document.createElement("td");
+        entryName.textContent = leaderboard[i].name;
+        entry.append(entryName);
+
+        let entryBoardSize = document.createElement("td");
+        entryBoardSize.textContent = leaderboard[i].boardSize;
+        entry.append(entryBoardSize);
+
+        let entryWins = document.createElement("td");
+        entryWins.textContent = leaderboard[i].wins.toString();
+        entry.append(entryWins);
+
+        entryDefeats = document.createElement("td");
+        entryDefeats.textContent = leaderboard[i].defeats.toString();
+        entry.append(entryDefeats);
+
+        leaderboardHtml.append(entry);
+    }
 }
