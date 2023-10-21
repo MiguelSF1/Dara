@@ -170,7 +170,7 @@ body {
     display: none;
 }
 
-#logout-section {
+#logout {
     position: absolute;
     z-index: 0;
 } 

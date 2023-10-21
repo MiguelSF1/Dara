@@ -20,15 +20,15 @@
         <section id="login-section" class="logged-out window">
             <h2 class="centered-text">Login</h2>
             <form>
-                <label for="userId" id="userId-label" class="login-label"> User <input type="text" id="userId" class="login-input" name="userId" placeholder="Enter your id" required /></label>
-                <label for="password" id="password-label" class="login-label"> Password <input type="password" id="password" class="login-input" name="password" placeholder="Enter your password" required /></label>
+                <label for="userId" id="userId-label" class="login-label"> User <input type="text" id="userId" class="login-input" name="userId" placeholder="Enter your id" required ></label>
+                <label for="password" id="password-label" class="login-label"> Password <input type="password" id="password" class="login-input" name="password" placeholder="Enter your password" required ></label>
                 <input id="login-button" class="button" type="submit" value="Sign in">
             </form>
         </section>
 
         <div id="logged-in-access" class="logged-in">
 
-            <section id="command-panel-section">
+            <div id="command-panel">
                 <ul class="centered-text">                    
                     <li class="menu"><button class="button" onclick="openContent('instructions-section')">Instructions</button></li>
                     <li id="config" class="menu"><button class="button" onclick="openContent('config-section')">Configuration</button></li>
@@ -37,19 +37,19 @@
                     <li class="menu"><button class="button" onclick="openContent('leaderboard-section')">Leaderboard</button></li>
                 </ul>
                 <hr>
-            </section>
+            </div>
 
-            <section id="logout-section" class="window">
+            <div id="logout" class="window">
                 <p id="logged-in-userId">Logged in as Player</p>
                 <button class="button">Logout</button>
-            </section> 
+            </div> 
 
             <section id="game-section">
                 <div class="flex-container">
 
                     <div class="flex-top">
                         <div id="game-phase" class="window">
-                            <h2 id="game-phase-text"></h2>
+                            <h2 id="game-phase-text">Click start game to play!</h2>
                         </div> 
                     </div>
                     
