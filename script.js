@@ -206,7 +206,7 @@ function updateLeaderboard() {
         entryWins.textContent = leaderboard[i].wins.toString();
         entry.append(entryWins);
 
-        entryDefeats = document.createElement("td");
+        let entryDefeats = document.createElement("td");
         entryDefeats.textContent = leaderboard[i].defeats.toString();
         entry.append(entryDefeats);
 
