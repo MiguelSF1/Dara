@@ -3,9 +3,6 @@
 
     <head>
         <link rel="stylesheet" href="styles.css">
-        <script src="index.js"></script>
-        <script src="script.js"></script>
-        <script src="game.js"></script>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Play Dara!</title>
@@ -18,12 +15,10 @@
         </section>
 
         <section id="login-section" class="logged-out window">
-            <h2 class="centered-text">Login</h2>
-            <form>
-                <label for="userId" id="userId-label" class="login-label"> User <input type="text" id="userId" class="login-input" name="userId" placeholder="Enter your id" required ></label>
-                <label for="password" id="password-label" class="login-label"> Password <input type="password" id="password" class="login-input" name="password" placeholder="Enter your password" required ></label>
-                <input id="login-button" class="button" type="submit" value="Sign in">
-            </form>
+            <h2 class="centered-text">Login / Register</h2>
+            <label for="userId" id="userId-label" class="login-label"> User <input type="text" id="userId" class="login-input" name="userId" placeholder="Enter your id" required ></label>
+            <label for="password" id="password-label" class="login-label"> Password <input type="password" id="password" class="login-input" name="password" placeholder="Enter your password" required ></label>
+            <input id="login-button" class="button" type="submit" value="Sign in / up" onClick="userRegisterOrLogin()">
         </section>
 
         <div id="logged-in-access" class="logged-in">
@@ -33,15 +28,15 @@
                     <li class="menu"><button class="button" onclick="openContent('instructions-section')">Instructions</button></li>
                     <li id="config" class="menu"><button class="button" onclick="openContent('config-section')">Configuration</button></li>
                     <li id="start-game" class="menu"><button class="button" onclick="startGame()">Start game</button></li>
-                    <li id="forfeit" class="menu"><button class="button" onclick="game.forfeitGame()">Forfeit</button></li>
+                    <li id="forfeit" class="menu"><button class="button" onclick="forfeit()">Forfeit</button></li>
                     <li class="menu"><button class="button" onclick="openContent('leaderboard-section')">Leaderboard</button></li>
                 </ul>
                 <hr>
             </div>
 
             <div id="logout" class="window">
-                <p id="logged-in-userId">Logged in as Player</p>
-                <button class="button">Logout</button>
+                <p id="logged-in-userId"></p>
+                <button class="button" onclick="logout()">Logout</button>
             </div> 
 
             <section id="game-section">
@@ -108,7 +103,7 @@
                 </div>
 
                 <div>
-                    <h3>Pick your color</h3>
+                    <h3>Pick your color against computer</h3>
                     <label for="pick-white" id="pick-white-label">
                         <input type="radio" id="pick-white" name="pick-color" value="white" checked>
                         White
@@ -120,7 +115,7 @@
                 </div>
 
                 <div>
-                    <h3>Pick the starting color</h3>
+                    <h3>Pick the starting color against computer</h3>
                     <label for="start-white" id="start-white-label">
                         <input type="radio" id="start-white" name="start-color" value="white" checked>
                         White
@@ -234,23 +229,42 @@
 
             <section id="leaderboard-section" class="centered window hidden">
                 <button onclick="closeContent('leaderboard-section')" class="close button">X</button>
-                <h2 class="centered-text">Leaderboard</h2>
-                <hr>
-                
-                <table id="leaderboard" class="leaderboard-table">
-                    <tr>
-                        <th>Name</th>
-                        <th>Board Size</th>
-                        <th>Size</th>
-                        <th>Wins</th>
-                        <th>Defeats</th>
-                    </tr>
-                </table>     
+                <button onclick="changeLeaderboardPage()" class="button">Against Computer</button>
+                <button onclick="changeLeaderboardPage()" class="button">Against Players</button>
+
+                <div id="leaderboard-computer-div">
+                    <h2 class="centered-text">Leaderboard Against Computer</h2>
+                    <hr>
+                    <table id="leaderboard-against-computer" class="leaderboard-table">
+                        <tr>
+                            <th>Name</th>
+                            <th>Board Size</th>
+                            <th>Wins</th>
+                            <th>Defeats</th>
+                        </tr>
+                    </table>
+                </div>
+
+                <div id="leaderboard-player-div" class="hidden">
+                    <h2 class="centered-text">Leaderboard Against Player</h2>
+                    <hr>
+                    <table id="leaderboard-against-player" class="leaderboard-table">
+                        <tr>
+                            <th>Name</th>
+                            <th>Board Size</th>
+                            <th>Wins</th>
+                            <th>Defeats</th>
+                        </tr>
+                    </table>
+                </div>
                    
             </section>
 
         </div>
 
+        <script src="index.js"></script>
+        <script src="script.js"></script>
+        <script src="game.js"></script>
     </body>
 
 </html>

@@ -1,6 +1,15 @@
-let username = "Player";
+let username;
+let password;
 let game;
+let gameId;
+let eventSource;
+gamePhaseText = document.getElementById("game-phase-text");
 let leaderboard = [];
+if (localStorage.getItem("leaderboard") !== null) {
+    leaderboard = JSON.parse(localStorage.getItem("leaderboard"));
+    buildLeaderboard(leaderboard, "leaderboard-against-computer");
+}
+rankingGame();
 
 function startGame() {
     const rows = parseInt(getSelectedValue("board-size")[0]);
@@ -8,18 +17,23 @@ function startGame() {
     const curPlayer = getSelectedValue("start-color");
     const playerColor = getSelectedValue("pick-color");
     const opponent = getSelectedValue("play-against");
-    game = new Game(rows, columns, curPlayer, playerColor, opponent);
 
-    gameLoop();
+
+   if (opponent === "computer") {
+        game = new Game(rows, columns, curPlayer, playerColor, opponent);
+        gameLoopAi();
+    } else {
+       joinGame(rows, columns);
+    }
 }
 
-function gameLoop() {
+function gameLoopAi() {
     if (!game.isPlayerTurn() && game.opponent === "computer") {
         makeAiMove();
     }
 
     if (!game.checkGameOver()) {
-        setTimeout(gameLoop, 1000);
+        setTimeout(gameLoopAi, 1000);
     } else {
         game.gameOver();
         updateLeaderboard();
@@ -167,7 +181,12 @@ function updateLeaderboard() {
         }
     }
 
-    const leaderboardHtml = document.getElementById("leaderboard");
+    buildLeaderboard(leaderboard, "leaderboard-against-computer");
+    localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
+}
+
+function buildLeaderboard(leaderboard, htmlLeaderboard) {
+    const leaderboardHtml = document.getElementById(htmlLeaderboard);
     leaderboardHtml.innerHTML = "";
 
     let leaderboardHeader = document.createElement("tr");
@@ -213,3 +232,253 @@ function updateLeaderboard() {
         leaderboardHtml.append(entry);
     }
 }
+
+async function registerFetch(usernameValue, passwordValue) {
+    const data = { nick: usernameValue, password: passwordValue };
+    const response = await fetch("http://twserver.alunos.dcc.fc.up.pt:8008/register", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    });
+    if (response.ok) {
+        return response.json;
+    } else {
+        throw new Error("invalid status");
+    }
+}
+
+function userRegisterOrLogin() {
+    const usernameValue = document.getElementById("userId").value;
+    const passwordValue = document.getElementById("password").value;
+    const displayUsername = document.getElementById("logged-in-userId");
+    registerFetch(usernameValue, passwordValue).then(() => {
+        username = usernameValue;
+        password = passwordValue;
+        const loggedOut = document.querySelector('.logged-out');
+        const loggedIn = document.querySelector('.logged-in');
+        loggedOut.style.display = 'none';
+        loggedIn.style.display = 'block';
+        displayUsername.innerText = "Logged in as " + username;
+    }).catch(reason => window.alert(reason));
+}
+
+function logout() {
+    const loggedOut = document.querySelector('.logged-out');
+    const loggedIn = document.querySelector('.logged-in');
+    loggedOut.style.display = 'block';
+    loggedIn.style.display = 'none';
+    if (game !== null) {
+        leaveGame();
+    }
+}
+
+async function joinFetch(rows, columns) {
+    const data = { group: 28, nick: username, password: password, size: { rows: rows, columns: columns } };
+    const response = await fetch("http://twserver.alunos.dcc.fc.up.pt:8008/join", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    });
+    if (response.ok) {
+        return response.json();
+    } else {
+        throw new Error("invalid status")
+    }
+}
+
+function joinGame(rows, columns) {
+    joinFetch(rows, columns).then(r => {
+        gameId = r.game;
+        document.getElementById("forfeit").style.display = "inline-block";
+        document.getElementById("config").style.display = "none";
+        gamePhaseText.textContent = "Awaiting for opponent";
+        game = new Game(rows, columns, null, undefined, "player");
+        updateGame();
+    }).catch(reason => window.alert(reason));
+
+}
+
+async function leaveFetch() {
+    const data = { group: 28, nick: username, password: password, game: gameId };
+    const response = await fetch("http://twserver.alunos.dcc.fc.up.pt:8008/leave", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    });
+    if (response.ok) {
+        return response.json();
+    } else {
+        throw new Error("invalid status");
+    }
+}
+
+
+function leaveGame() {
+    leaveFetch().then(() => {
+
+    }).catch(reason => window.alert(reason));
+}
+
+async function notifyFetch(row, column) {
+    const data = { group: 28, nick: username, password: password, game: gameId, move: { row: row, column: column } };
+    const response = await fetch("http://twserver.alunos.dcc.fc.up.pt:8008/notify", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    });
+    if (response.ok) {
+        return response.json();
+    } else {
+        throw new Error(response.statusText);
+    }
+}
+
+function notifyGame(row, column) {
+    notifyFetch(row, column).then(() => {
+
+    }).catch(reason => window.alert(reason));
+}
+
+async function rankingFetch(rows, columns) {
+    const data = { group: 28, size: { rows: rows, columns: columns } };
+    const response = await fetch("http://twserver.alunos.dcc.fc.up.pt:8008/ranking", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    });
+    if (response.ok) {
+        return response.json();
+    } else {
+        throw new Error("invalid status");
+    }
+}
+
+function rankingGame() {
+    rankingFetch(6, 6).then(r => {
+        const leaderboardPlayer = [];
+        for (let i in r["ranking"]) {
+            leaderboardPlayer.push({
+                name: r["ranking"][i]["nick"],
+                boardSize: 6 + "x" + 6,
+                wins: r["ranking"][i]["victories"],
+                defeats: r["ranking"][i]["games"] - r["ranking"][i]["victories"]
+            });
+        }
+
+        rankingFetch(6, 5).then(r => {
+            for (let i in r["ranking"]) {
+                leaderboardPlayer.push({
+                    name: r["ranking"][i]["nick"],
+                    boardSize: 6 + "x" + 5,
+                    wins: r["ranking"][i]["victories"],
+                    defeats: r["ranking"][i]["games"] - r["ranking"][i]["victories"]
+                });
+            }
+
+            rankingFetch(7, 7).then(r => {
+                for (let i in r["ranking"]) {
+                    leaderboardPlayer.push({
+                        name: r["ranking"][i]["nick"],
+                        boardSize: 7 + "x" + 7,
+                        wins: r["ranking"][i]["victories"],
+                        defeats: r["ranking"][i]["games"] - r["ranking"][i]["victories"]
+                    });
+                }
+
+                rankingFetch(7, 6).then(r => {
+                    for (let i in r["ranking"]) {
+                        leaderboardPlayer.push({
+                            name: r["ranking"][i]["nick"],
+                            boardSize: 7 + "x" + 6,
+                            wins: r["ranking"][i]["victories"],
+                            defeats: r["ranking"][i]["games"] - r["ranking"][i]["victories"]
+                        });
+                    }
+
+                    buildLeaderboard(leaderboardPlayer, "leaderboard-against-player");
+
+                }).catch(reason => window.alert(reason));
+
+            }).catch(reason => window.alert(reason));
+
+        }).catch(reason => window.alert(reason));
+
+    }).catch(reason => window.alert(reason));
+}
+
+//let opponentClickedRow;
+//let opponentClickedColumn;
+function updateGame() {
+    eventSource = new EventSource("http://twserver.alunos.dcc.fc.up.pt:8008/update?nick=" + username + "&game=" + gameId);
+    eventSource.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+        console.log(data);
+
+        if (data.hasOwnProperty("winner")) {
+            eventSource.close();
+            game.winner = data["winner"];
+            game.curPlayer = "gameOver";
+            game.gameOver();
+            rankingGame();
+        }
+
+        // start game
+        if (game.curPlayer === null) {
+            game.playerColor = data["players"][username];
+            if (data["turn"] === username) {
+                game.curPlayer = game.playerColor;
+            } else {
+                if (game.playerColor === "white") {
+                    game.curPlayer = "black";
+                } else {
+                    game.curPlayer = "white";
+                }
+            }
+            for (let nick in data["players"]) {
+                game.sendGameMessage(nick + " is " + data["players"][nick]);
+            }
+            gamePhaseText.textContent = game.state + " pieces | " + game.curPlayer + " turn";
+        }
+
+        /*
+        // make opponent move
+        if (data.hasOwnProperty("move") && !game.isPlayerTurn()) {
+            if (game.state === "placing") {
+                game.placePiece(data["move"]["row"], data["move"]["column"]);
+            } else {
+                if (data["step"] === "from") {
+                    opponentClickedRow = data["move"]["row"];
+                    opponentClickedColumn = data["move"]["column"];
+                } else if (data["step"] === "to") {
+                    game.movePiece(opponentClickedRow, opponentClickedColumn, data["move"]["row"], data["move"]["column"]);
+                } else {
+                    game.removePiece(data["move"]["row"], data["move"]["column"]);
+                }
+            }
+        } */
+
+
+    }
+}
+
+function forfeit() {
+    if (game.opponent === "computer") {
+        game.forfeitGame();
+    } else {
+        leaveGame()
+    }
+}
+
+
+
+

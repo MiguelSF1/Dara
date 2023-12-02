@@ -16,8 +16,7 @@ body {
     color: white;
 }
 
-/* switch "logged-out" to "logged-in" if want to see login screen */
-.logged-out {
+.logged-in {
     display: none;
 }
 

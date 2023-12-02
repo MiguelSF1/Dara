@@ -52,7 +52,9 @@ class Game {
         this._forfeit.style.display = "inline-block";
         this._config.style.display = "none";
         this._gameMessages.style.display = "inline-block";
-        this._gamePhaseText.textContent = this._state + " pieces | " + this._curPlayer + " turn";
+        if (this._opponent === "computer") {
+            this._gamePhaseText.textContent = this._state + " pieces | " + this._curPlayer + " turn";
+        }
     }
 
     get state() {
@@ -85,6 +87,18 @@ class Game {
 
     get playerColor() {
         return this._playerColor;
+    }
+
+    set playerColor(playerColor) {
+        this._playerColor = playerColor;
+    }
+
+    set curPlayer(curPlayer) {
+        this._curPlayer = curPlayer;
+    }
+
+    set winner(winner) {
+        this._winner = winner;
     }
 
     switchTurn() {
@@ -122,6 +136,10 @@ class Game {
                 this._state = "moving";
             }
 
+            if (this._opponent === "player" && this._curPlayer === this._playerColor) {
+                notifyGame(row, column);
+            }
+
             this.switchTurn();
             return true;
         }
@@ -141,6 +159,10 @@ class Game {
                 this._prevWhiteMove = [endingRow, endingColumn, startingRow, startingColumn];
             } else {
                 this._prevBlackMove = [endingRow, endingColumn, startingRow, startingColumn];
+            }
+            if (this._opponent === "player" && this._curPlayer === this._playerColor) {
+                notifyGame(startingRow, startingColumn);
+                notifyGame(endingRow, endingColumn);
             }
             if (this.checkInLinePiece(endingRow, endingColumn)) {
                 this.sendGameMessage(this._curPlayer + " can remove a piece");
@@ -173,6 +195,10 @@ class Game {
             this._insideWhitePieceCount--;
         } else {
             this._insideBlackPieceCount--;
+        }
+
+        if (this._opponent === "player" && this._curPlayer === this._playerColor) {
+            notifyGame(row, column);
         }
 
         this.switchTurn();
@@ -423,6 +449,10 @@ class Game {
         this._blackPieces.innerHTML = "";
         this._gameMessages.innerHTML = "";
         this._gameMessages.style.display = "none";
-        this._gamePhaseText.textContent = this._winner + " wins";
+        if (this._winner === null) {
+            this._gamePhaseText.textContent = "game over with no winner";
+        } else {
+            this._gamePhaseText.textContent = this._winner + " wins";
+        }
     }
 }

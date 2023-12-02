@@ -21,6 +21,19 @@ function changeInstructionsPage() {
     }
 }
 
+function changeLeaderboardPage() {
+    let leaderboardAgainstPlayer = document.getElementById("leaderboard-player-div");
+    let leaderboardAgainstComputer = document.getElementById("leaderboard-computer-div");
+
+    if (leaderboardAgainstComputer.style.display !== "none") {
+        leaderboardAgainstComputer.style.display = "none";
+        leaderboardAgainstPlayer.style.display = "block";
+    } else {
+        leaderboardAgainstComputer.style.display = "block";
+        leaderboardAgainstPlayer.style.display = "none";
+    }
+}
+
 function getSelectedValue(name) {
     const radio = document.getElementsByName(name);
 
