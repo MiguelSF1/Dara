@@ -66,7 +66,7 @@ function doPost(pathname, request, response) {
             break;
         case '/notify':
             break;
-        case 'ranking':
+        case '/ranking':
             serverRanking(request, response).then(() => {});
             break;
         default:

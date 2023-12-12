@@ -1,8 +1,11 @@
 [
   {
     "group": 28,
-    "size": "6x6",
-    "table": [
+    "size": {
+      "rows": 6,
+      "columns": 6
+    },
+    "ranking": [
       {
         "nick": "miguel",
         "games": 1,

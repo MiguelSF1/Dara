@@ -31,7 +31,7 @@ const headers = {
 };
 
 module.exports = async function (request, response) {
-    let answer;
+    let answer = {};
     let status;
 
     try {
@@ -39,8 +39,29 @@ module.exports = async function (request, response) {
         const userInput = JSON.parse(data);
 
         if (!userInput.hasOwnProperty("group") || !userInput.hasOwnProperty("size")) {
-            answer.error = "invalid body";
+            answer.error = "undefined group or size";
             response.writeHead(400, headers.plain);
+            response.end(JSON.stringify(answer));
+            return;
+        }
+
+        if (!Number.isInteger(userInput["group"]) || typeof userInput["size"] !== "object") {
+            answer.error = "invalid group or size value";
+            response.writeHead(400, headers.plain);
+            response.end(JSON.stringify(answer));
+            return;
+        }
+
+        if (!userInput["size"].hasOwnProperty("rows") || !userInput["size"].hasOwnProperty("columns")) {
+            answer.error = "undefined rows or columns from size";
+            response.writeHead("400", headers.plain);
+            response.end(JSON.stringify(answer));
+            return;
+        }
+
+        if (!Number.isInteger(userInput["size"]["rows"]) || !Number.isInteger(userInput["size"]["columns"])) {
+            answer.error = "invalid rows or columns value from size";
+            response.writeHead("400", headers.plain);
             response.end(JSON.stringify(answer));
             return;
         }
@@ -50,12 +71,12 @@ module.exports = async function (request, response) {
 
         const leaderboard = findLeaderboard(leaderboardData, userInput);
         if (leaderboard === undefined) {
-            status = 400;
-            answer = {};
+            status = 200;
+            answer = { "ranking": [] };
         } else {
             status = 200;
             leaderboard.sort(orderLeaderboard);
-            answer = leaderboard.slice(0, 10);
+            answer = { "ranking": leaderboard.slice(0, 10) };
         }
 
         response.writeHead(status, headers.plain);
@@ -70,8 +91,9 @@ module.exports = async function (request, response) {
 
 function findLeaderboard(leaderboardData, userInput) {
     for (let i = 0; i < leaderboardData.length; i++) {
-        if (leaderboardData[i].group === userInput.group && leaderboardData[i].size === userInput.size) {
-            return leaderboardData[i].table;
+        if (leaderboardData[i].group === userInput.group && leaderboardData[i]["size"]["rows"] === userInput["size"]["rows"]
+            && leaderboardData[i]["size"]["columns"] === userInput["size"]["columns"]) {
+            return leaderboardData[i]["ranking"];
         }
     }
 }

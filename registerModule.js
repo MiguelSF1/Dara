@@ -9,7 +9,7 @@ module.exports = async function (request, response) {
         const userInput = JSON.parse(data);
 
         if (!userInput.hasOwnProperty("nick") || !userInput.hasOwnProperty("password")) {
-            answer.error = "invalid body";
+            answer.error = "undefined nick or password";
             response.writeHead(400, headers.plain);
             response.end(JSON.stringify(answer));
             return;
