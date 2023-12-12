@@ -161,8 +161,7 @@ class Game {
                 this._prevBlackMove = [endingRow, endingColumn, startingRow, startingColumn];
             }
             if (this._opponent === "player" && this._curPlayer === this._playerColor) {
-                notifyGame(startingRow, startingColumn);
-                notifyGame(endingRow, endingColumn);
+                notifyFetch(startingRow, startingColumn).then(() => notifyFetch(endingRow, endingColumn));
             }
             if (this.checkInLinePiece(endingRow, endingColumn)) {
                 this.sendGameMessage(this._curPlayer + " can remove a piece");
@@ -197,7 +196,6 @@ class Game {
             this._insideBlackPieceCount--;
         }
 
-        console.log(this._curPlayer)
         if (this._opponent === "player" && this._curPlayer === this._playerColor) {
             notifyGame(row, column);
         }
