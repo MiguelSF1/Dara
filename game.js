@@ -197,6 +197,7 @@ class Game {
             this._insideBlackPieceCount--;
         }
 
+        console.log(this._curPlayer)
         if (this._opponent === "player" && this._curPlayer === this._playerColor) {
             notifyGame(row, column);
         }

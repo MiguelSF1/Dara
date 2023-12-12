@@ -1,8 +1,8 @@
+const url = "http://twserver.alunos.dcc.fc.up.pt:8008/";
 let username;
 let password;
 let game;
 let gameId;
-let eventSource;
 gamePhaseText = document.getElementById("game-phase-text");
 let leaderboard = [];
 if (localStorage.getItem("leaderboard") !== null) {
@@ -235,7 +235,7 @@ function buildLeaderboard(leaderboard, htmlLeaderboard) {
 
 async function registerFetch(usernameValue, passwordValue) {
     const data = { nick: usernameValue, password: passwordValue };
-    const response = await fetch("http://twserver.alunos.dcc.fc.up.pt:8008/register", {
+    const response = await fetch(url + "register", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -276,7 +276,7 @@ function logout() {
 
 async function joinFetch(rows, columns) {
     const data = { group: 28, nick: username, password: password, size: { rows: rows, columns: columns } };
-    const response = await fetch("http://twserver.alunos.dcc.fc.up.pt:8008/join", {
+    const response = await fetch(url + "join", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -304,7 +304,7 @@ function joinGame(rows, columns) {
 
 async function leaveFetch() {
     const data = { group: 28, nick: username, password: password, game: gameId };
-    const response = await fetch("http://twserver.alunos.dcc.fc.up.pt:8008/leave", {
+    const response = await fetch(url + "leave", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -327,7 +327,7 @@ function leaveGame() {
 
 async function notifyFetch(row, column) {
     const data = { group: 28, nick: username, password: password, game: gameId, move: { row: row, column: column } };
-    const response = await fetch("http://twserver.alunos.dcc.fc.up.pt:8008/notify", {
+    const response = await fetch(url + "notify", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -349,7 +349,7 @@ function notifyGame(row, column) {
 
 async function rankingFetch(rows, columns) {
     const data = { group: 28, size: { rows: rows, columns: columns } };
-    const response = await fetch("http://twserver.alunos.dcc.fc.up.pt:8008/ranking", {
+    const response = await fetch(url + "ranking", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -416,14 +416,17 @@ function rankingGame() {
     }).catch(reason => window.alert(reason));
 }
 
-//let opponentClickedRow;
-//let opponentClickedColumn;
+
 function updateGame() {
-    eventSource = new EventSource("http://twserver.alunos.dcc.fc.up.pt:8008/update?nick=" + username + "&game=" + gameId);
+    const eventSource = new EventSource(url + "update?nick=" + username + "&game=" + gameId);
+    let opponentClickedRow;
+    let opponentClickedColumn;
+    let step, state;
     eventSource.onmessage = function(event) {
         const data = JSON.parse(event.data);
         console.log(data);
 
+        // end game
         if (data.hasOwnProperty("winner")) {
             eventSource.close();
             game.winner = data["winner"];
@@ -450,24 +453,25 @@ function updateGame() {
             gamePhaseText.textContent = game.state + " pieces | " + game.curPlayer + " turn";
         }
 
-        /*
+
         // make opponent move
         if (data.hasOwnProperty("move") && !game.isPlayerTurn()) {
-            if (game.state === "placing") {
+            if (state === "drop") {
                 game.placePiece(data["move"]["row"], data["move"]["column"]);
             } else {
-                if (data["step"] === "from") {
+                if (step === "from") {
                     opponentClickedRow = data["move"]["row"];
                     opponentClickedColumn = data["move"]["column"];
-                } else if (data["step"] === "to") {
+                } else if (step === "to") {
                     game.movePiece(opponentClickedRow, opponentClickedColumn, data["move"]["row"], data["move"]["column"]);
                 } else {
                     game.removePiece(data["move"]["row"], data["move"]["column"]);
                 }
             }
-        } */
+        }
 
-
+        state = data["phase"];
+        step = data["step"];
     }
 }
 
