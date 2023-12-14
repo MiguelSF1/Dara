@@ -1,21 +1,22 @@
 const fsp = require('fs').promises;
+const serverConfig = require("./configModule");
 
 module.exports = async function (request, response) {
     let answer = {};
     let status;
 
     try {
-        const data = await readRequestBody(request);
+        const data = await serverConfig.readRequestBody(request);
         const userInput = JSON.parse(data);
 
         if (!userInput.hasOwnProperty("nick") || !userInput.hasOwnProperty("password")) {
             answer.error = "undefined nick or password";
-            response.writeHead(400, headers.plain);
+            response.writeHead(400, serverConfig.headers.plain);
             response.end(JSON.stringify(answer));
             return;
         }
 
-        const fileData = await fsp.readFile('userData.json', 'utf8');
+        const fileData = await fsp.readFile('./data/userData.json', 'utf8');
         const userData = JSON.parse(fileData);
 
         const login = tryLogin(userData, userInput);
@@ -30,17 +31,17 @@ module.exports = async function (request, response) {
             answer.error = "wrong password for nick";
         }
 
-        response.writeHead(status, headers.plain);
+        response.writeHead(status, serverConfig.headers.plain);
         response.end(JSON.stringify(answer));
     } catch (error) {
         console.error('Error processing registration:', error);
-        response.writeHead(500, headers.plain);
+        response.writeHead(500, serverConfig.headers.plain);
         response.end();
     }
 }
 
 async function registerUser(query) {
-    await fsp.writeFile('userData.json', JSON.stringify(query));
+    await fsp.writeFile('./data/userData.json', JSON.stringify(query));
 }
 
 function tryLogin(data, query) {
@@ -55,33 +56,3 @@ function tryLogin(data, query) {
     return 2;
 }
 
-
-async function readRequestBody(request) {
-    return new Promise((resolve, reject) => {
-        let data = '';
-        request.on('data', chunk => {
-            data += chunk;
-        });
-        request.on('end', () => {
-            resolve(data);
-        });
-        request.on('error', (error) => {
-            reject(error);
-        });
-    });
-}
-
-
-const headers = {
-    plain: {
-        'Content-Type': 'application/json',
-        'Cache-Control': 'no-cache',
-        'Access-Control-Allow-Origin': '*'
-    },
-    sse: {
-        'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache',
-        'Access-Control-Allow-Origin': '*',
-        'Connection': 'keep-alive'
-    }
-};

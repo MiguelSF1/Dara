@@ -1,72 +1,43 @@
 const fsp = require('fs').promises;
-
-async function readRequestBody(request) {
-    return new Promise((resolve, reject) => {
-        let data = '';
-        request.on('data', chunk => {
-            data += chunk;
-        });
-        request.on('end', () => {
-            resolve(data);
-        });
-        request.on('error', (error) => {
-            reject(error);
-        });
-    });
-}
-
-
-const headers = {
-    plain: {
-        'Content-Type': 'application/json',
-        'Cache-Control': 'no-cache',
-        'Access-Control-Allow-Origin': '*'
-    },
-    sse: {
-        'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache',
-        'Access-Control-Allow-Origin': '*',
-        'Connection': 'keep-alive'
-    }
-};
+const serverConfig = require("./configModule");
 
 module.exports = async function (request, response) {
     let answer = {};
     let status;
 
     try {
-        const data = await readRequestBody(request);
+        const data = await serverConfig.readRequestBody(request);
         const userInput = JSON.parse(data);
 
         if (!userInput.hasOwnProperty("group") || !userInput.hasOwnProperty("size")) {
             answer.error = "undefined group or size";
-            response.writeHead(400, headers.plain);
+            response.writeHead(400, serverConfig.headers.plain);
             response.end(JSON.stringify(answer));
             return;
         }
 
         if (!Number.isInteger(userInput["group"]) || typeof userInput["size"] !== "object") {
             answer.error = "invalid group or size value";
-            response.writeHead(400, headers.plain);
+            response.writeHead(400, serverConfig.headers.plain);
             response.end(JSON.stringify(answer));
             return;
         }
 
         if (!userInput["size"].hasOwnProperty("rows") || !userInput["size"].hasOwnProperty("columns")) {
             answer.error = "undefined rows or columns from size";
-            response.writeHead("400", headers.plain);
+            response.writeHead("400", serverConfig.headers.plain);
             response.end(JSON.stringify(answer));
             return;
         }
 
         if (!Number.isInteger(userInput["size"]["rows"]) || !Number.isInteger(userInput["size"]["columns"])) {
             answer.error = "invalid rows or columns value from size";
-            response.writeHead("400", headers.plain);
+            response.writeHead("400", serverConfig.headers.plain);
             response.end(JSON.stringify(answer));
             return;
         }
 
-        const fileData = await fsp.readFile('leaderboardData.json', 'utf8');
+        const fileData = await fsp.readFile('./data/leaderboardData.json', 'utf8');
         const leaderboardData = JSON.parse(fileData);
 
         const leaderboard = findLeaderboard(leaderboardData, userInput);
@@ -79,11 +50,11 @@ module.exports = async function (request, response) {
             answer = { "ranking": leaderboard.slice(0, 10) };
         }
 
-        response.writeHead(status, headers.plain);
+        response.writeHead(status, serverConfig.headers.plain);
         response.end(JSON.stringify(answer));
     } catch (error) {
         console.error('Error getting leaderboard:', error);
-        response.writeHead(500, headers.plain);
+        response.writeHead(500, serverConfig.headers.plain);
         response.end();
     }
 
