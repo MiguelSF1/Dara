@@ -82,7 +82,7 @@ function makeGame(userInput, game, gameData) {
         "size": userInput["size"],
         "gameState": {
             "board": board,
-            "phase":"drop","step":"from","turn": "" ,"players":{}
+            "phase":"drop","step":"from","turn": "" ,"players":{}, "prevWhiteMove": [-1, -1, -1, -1], "prevBlackMove": [-1, -1, -1, -1], "selectedPiece": [-1, -1]
         }
     })
 

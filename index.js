@@ -35,7 +35,7 @@ const server = http.createServer(function (request, response) {
 
 });
 
-server.listen(8008);
+server.listen(8128);
 
 
 function doGet(pathname, request, response, nickParam, gameParam) {

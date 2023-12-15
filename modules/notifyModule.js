@@ -1,5 +1,6 @@
 const fsp = require('fs').promises;
 const serverConfig = require("./configModule");
+const gameLogic = require("./gameModule")
 
 module.exports = async function (request, response) {
     let answer = {};
@@ -17,18 +18,99 @@ module.exports = async function (request, response) {
     }
 
     const fileData = await fsp.readFile('./data/gameData.json', 'utf8');
-    const gameData = JSON.parse(fileData);
-    const game = findGame(gameData, userInput);
+    const game = JSON.parse(fileData);
+    const gameIdx = findGame(game, userInput);
 
-    if (userInput["nick"] !== game["gameState"]["turn"]) {
+    if (userInput["nick"] !== game[gameIdx]["gameState"]["turn"]) {
         answer.error = "Not your turn to play";
         response.writeHead(400, serverConfig.headers.plain);
         response.end(JSON.stringify(answer));
         return;
     }
 
-    // make move
-    // on game over put winner on data and update leaderboard
+    const row = userInput["move"]["row"];
+    const column = userInput["move"]["column"];
+    const board = game[gameIdx]["gameState"]["board"];
+    const curPlayer = game[gameIdx]["gameState"]["players"][userInput["nick"]];
+    if (game[gameIdx]["gameState"]["phase"] === "drop") {
+        if (gameLogic.placePiece(row, column, board, curPlayer)) {
+            game[gameIdx]["gameState"]["board"]["row"]["column"] = curPlayer;
+            let pieceInsideCount = 0;
+            for (let i = 0; i < board.length; i++) {
+                for (let j = 0; j < board[0].length; j++) {
+                    if (board[i][j] !== "empty") {
+                        pieceInsideCount++;
+                    }
+                }
+            }
+            if (pieceInsideCount === 24) {
+                game[gameIdx]["gameState"]["phase"] = "move";
+            }
+            await fsp.writeFile('./data/gameData.json', JSON.stringify(game));
+        } else {
+            answer.error = "invalid move";
+            response.writeHead(400, serverConfig.headers.plain);
+            response.end(JSON.stringify(answer));
+            return;
+        }
+    } else {
+        if (game[gameIdx]["gameState"]["step"] === "from") {
+            game[gameIdx]["gameState"]["selectedPiece"] = [row, column];
+        } else if (game[gameIdx]["gameState"]["step"] === "to") {
+            const startingRow = game[gameIdx]["gameState"]["selectedPiece"][0];
+            const startingColumn = game[gameIdx]["gameState"]["selectedPiece"][1];
+            let prevWhiteMove = game[gameIdx]["gameState"]["prevWhiteMove"];
+            let prevBlackMove = game[gameIdx]["gameState"]["prevBlackMove"];
+            if (gameLogic.movePiece(startingRow, startingColumn, row, column, curPlayer, board, prevWhiteMove, prevBlackMove)) {
+                if (curPlayer === "white") {
+                    prevWhiteMove = [row, column, startingRow, startingColumn];
+                    game[gameIdx]["gameState"]["prevWhiteMove"] = prevWhiteMove;
+                } else {
+                    prevBlackMove = [row, column, startingRow, startingColumn];
+                    game[gameIdx]["gameState"]["prevBlackMove"] = prevBlackMove;
+                }
+                game[gameIdx]["gameState"]["board"][startingRow][startingColumn] = "empty";
+                game[gameIdx]["gameState"]["board"][row][column] = curPlayer;
+                await fsp.writeFile('./data/gameData.json', JSON.stringify(game));
+                if (gameLogic.checkInLinePiece(row, column, curPlayer, board)) {
+                    game[gameIdx]["gameState"]["step"] = "take";
+                    await fsp.writeFile('./data/gameData.json', JSON.stringify(game));
+                }
+            } else {
+                answer.error = "invalid move";
+                response.writeHead(400, serverConfig.headers.plain);
+                response.end(JSON.stringify(answer));
+                return;
+            }
+        } else {
+           if (gameLogic.removePiece(row, column, curPlayer, board)) {
+                game[gameIdx]["gameState"]["board"][row][column] = "empty";
+               await fsp.writeFile('./data/gameData.json', JSON.stringify(game));
+
+           } else {
+               answer.error = "invalid move";
+               response.writeHead(400, serverConfig.headers.plain);
+               response.end(JSON.stringify(answer));
+               return;
+           }
+        }
+
+        const colorWinner = gameLogic.gameOver(board, game[gameIdx]["gameState"]["prevWhiteMove"], game[gameIdx]["gameState"]["prevBlackMove"], curPlayer);
+        if (colorWinner !== null) {
+            let winner;
+            for (let player in game[gameIdx]["gameState"]["players"]) {
+                if (game[gameIdx]["gameState"]["players"][player] === colorWinner) {
+                    winner = player;
+                }
+            }
+            game[gameIdx]["gameState"]["winner"] = winner;
+            await fsp.writeFile('./data/gameData.json', JSON.stringify(game));
+            const fileData = await fsp.readFile('./data/leaderboardData.json', 'utf8');
+            const leaderboard = JSON.parse(fileData);
+            const updatedLeaderboard = gameLogic.updateLeaderboard(game[gameIdx], leaderboard);
+            await fsp.writeFile('./data/leaderboardData.json', JSON.stringify(updatedLeaderboard));
+        }
+    }
 
     status = 200;
     response.writeHead(status, serverConfig.headers.plain);
@@ -39,8 +121,8 @@ module.exports = async function (request, response) {
 function findGame(game, userInput) {
     for (let i = 0; i < game.length; i++) {
         if (game[i]["game"] === userInput["game"]) {
-            return game[i];
+            return i;
         }
     }
-    return {};
+    return -1;
 }

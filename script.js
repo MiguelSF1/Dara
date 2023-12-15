@@ -1,7 +1,8 @@
 const url = "http://twserver.alunos.dcc.fc.up.pt:8008/";
+//const url = "http://localhost:8008/"
 let username;
 let password;
-let game;
+let game = null;
 let gameId;
 gamePhaseText = document.getElementById("game-phase-text");
 let leaderboard = [];

@@ -7,7 +7,6 @@ module.exports = async function (request, response, nickParam, gameParam) {
     let fileData = await fsp.readFile('./data/gameData.json', 'utf8');
     const gameData = JSON.parse(fileData);
     let gameIdx = findGame(gameData, gameParam);
-    // if -1 invalid game
     let newGameData = gameData;
     if (gameData[gameIdx]["gameState"]["turn"] === "") {
         newGameData[gameIdx]["gameState"]["turn"] = nickParam;
