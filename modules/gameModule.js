@@ -182,8 +182,8 @@ module.exports.gameOver = function gameOver(board, prevWhiteMove, prevBlackMove,
 module.exports.updateLeaderboard = function updateLeaderboard(game, oldLeaderboard) {
     const leaderboard = oldLeaderboard;
     const group = game["group"];
-    const rows = game["group"]["size"]["rows"];
-    const columns = game["group"]["size"]["columns"];
+    const rows = game["size"]["rows"];
+    const columns = game["size"]["columns"];
     const winner = game["gameState"]["winner"];
     let loser;
     for (let player in game["gameState"]["players"]) {
@@ -193,10 +193,12 @@ module.exports.updateLeaderboard = function updateLeaderboard(game, oldLeaderboa
         }
     }
 
+    let foundWinnerEntry = false;
+    let foundLoserEntry = false;
+    let foundTable = null;
     for (let table in leaderboard) {
         if (table["group"] === group && table["size"]["rows"] === rows && table["size"]["columns"] === columns) {
-            let foundWinnerEntry = false;
-            let foundLoserEntry = false;
+            foundTable = table;
             for (let player in table["ranking"]) {
                 if (player["nick"] === winner) {
                     player["games"]++;
@@ -204,17 +206,22 @@ module.exports.updateLeaderboard = function updateLeaderboard(game, oldLeaderboa
                     foundWinnerEntry = true;
                 } else if (player["nick"] === loser) {
                     player["games"]++;
+                    foundLoserEntry = true;
                 }
             }
-            if (!foundWinnerEntry) {
-                table["ranking"].push({"nick": winner, "games": 1, "victories": 1})
-            }
-            if (!foundLoserEntry) {
-                table["ranking"].push({"nick": loser, "games": 1, "victories": 0})
-            }
-
             break;
         }
+    }
+
+    if (foundTable === null) {
+        leaderboard.push({"group": group, "size": {"rows": rows, "columns": columns}, "ranking": []})
+        foundTable = leaderboard[leaderboard.length-1];
+    }
+    if (!foundWinnerEntry) {
+        foundTable["ranking"].push({"nick": winner, "games": 1, "victories": 1})
+    }
+    if (!foundLoserEntry) {
+        foundTable["ranking"].push({"nick": loser, "games": 1, "victories": 0})
     }
 
     return leaderboard;

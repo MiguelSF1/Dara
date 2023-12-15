@@ -1,5 +1,6 @@
 const fsp = require('fs').promises;
 const serverConfig = require("./configModule");
+const crypto = require("crypto");
 
 module.exports = async function (request, response) {
     let answer = {};
@@ -21,7 +22,11 @@ module.exports = async function (request, response) {
 
         const login = tryLogin(userData, userInput);
         if (login === 2) {
-            userData.push(userInput);
+            const newUser = {
+                "nick": userInput.nick,
+                "password": crypto.createHash('md5').update(userInput.password).digest('hex')
+            }
+            userData.push(newUser);
             await registerUser(userData);
             status = 200;
         } else if (login === 1) {
@@ -45,9 +50,10 @@ async function registerUser(query) {
 }
 
 function tryLogin(data, query) {
+    const password = crypto.createHash('md5').update(query.password).digest('hex');
     for (let i = 0; i < data.length; i++) {
         if (data[i].nick === query.nick) {
-            if (data[i].password === query.password) {
+            if (data[i].password === password) {
                 return 1;
             }
             return 0;

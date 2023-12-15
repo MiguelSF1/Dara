@@ -1,54 +1,47 @@
 const fsp = require('fs').promises;
 const serverConfig = require("./configModule");
+const gameLogic = require("./gameModule");
 
 
 module.exports = async function (request, response, nickParam, gameParam) {
-    response.writeHead(200, serverConfig.headers.sse);
-    let fileData = await fsp.readFile('./data/gameData.json', 'utf8');
-    const gameData = JSON.parse(fileData);
-    let gameIdx = findGame(gameData, gameParam);
-    let newGameData = gameData;
-    if (gameData[gameIdx]["gameState"]["turn"] === "") {
-        newGameData[gameIdx]["gameState"]["turn"] = nickParam;
-        newGameData[gameIdx]["gameState"]["players"][nickParam] = "white";
-    } else {
-        newGameData[gameIdx]["gameState"]["players"][nickParam] = "black";
-        response.write("data: " + JSON.stringify(newGameData[gameIdx]["gameState"]));
-        response.write("\n\n");
+    try {
+        const fileData = await fsp.readFile('./data/gameData.json', 'utf8');
+        const gameData = JSON.parse(fileData);
+        const gameIdx = findGame(gameData, gameParam);
+
+        if (Object.keys(gameData[gameIdx]["gameState"]["players"]).length < 2) {
+            response.writeHead(200, serverConfig.headers.sse);
+
+            if (gameData[gameIdx]["gameState"]["turn"] === "") {
+                gameData[gameIdx]["gameState"]["turn"] = nickParam;
+                gameData[gameIdx]["gameState"]["players"][nickParam] = "white";
+            } else {
+                gameData[gameIdx]["gameState"]["players"][nickParam] = "black";
+                response.write("data: " + JSON.stringify(gameData[gameIdx]["gameState"]));
+                response.write("\n\n");
+            }
+
+            await fsp.writeFile('./data/gameData.json', JSON.stringify(gameData));
+
+            await gameLoop(gameData, gameIdx, response);
+
+            const finalFileData = await fsp.readFile('./data/gameData.json', 'utf8');
+            let finalGameData = JSON.parse(finalFileData);
+
+            const leaderboardData = await fsp.readFile('./data/leaderboardData.json', 'utf8');
+            const leaderboard = JSON.parse(leaderboardData);
+            const updatedLeaderboard = gameLogic.updateLeaderboard(finalGameData[gameIdx], leaderboard);
+            await fsp.writeFile('./data/leaderboardData.json', JSON.stringify(updatedLeaderboard));
+
+        } else {
+            response.writeHead(400, serverConfig.headers.sse);
+            response.end();
+        }
+    } catch (error) {
+        console.error('Error processing :', error);
+        response.writeHead(500, serverConfig.headers.plain);
+        response.end();
     }
-    await fsp.writeFile('./data/gameData.json', JSON.stringify(newGameData));
-
-
-    setInterval(async () => {
-        fileData = await fsp.readFile('./data/gameData.json', 'utf8');
-        let updatedGameData = JSON.parse(fileData);
-        let updatedGameIdx = findGame(updatedGameData, gameParam);
-        if (newGameData[gameIdx]["gameState"]["players"].length < 2 && updatedGameData[updatedGameIdx]["gameState"]["players"].length === 2) {
-            response.write("data: " + JSON.stringify(updatedGameData[updatedGameIdx]["gameState"]));
-            response.write("\n\n");
-        }
-        if (updatedGameData[updatedGameIdx].hasOwnProperty("winner")) {
-            const winner = updatedGameData[updatedGameIdx]["winner"];
-            response.write("data: " + JSON.stringify({"winner": winner}));
-            response.write("\n\n");
-            updatedGameData.remove(updatedGameIdx);
-            await fsp.writeFile('./data/gameData.json', JSON.stringify(updatedGameData));
-        }
-        if (updatedGameData[updatedGameIdx]["gameState"].hasOwnProperty("winner")) {
-            response.write("data: " + JSON.stringify(updatedGameData[updatedGameIdx]["gameState"]));
-            response.write("\n\n");
-            updatedGameData.remove(updatedGameIdx);
-            await fsp.writeFile('./data/gameData.json', JSON.stringify(updatedGameData));
-        }
-        if (newGameData[gameIdx]["gameState"]["move"] !== updatedGameData[updatedGameIdx]["gameState"]["move"]
-            || newGameData[gameIdx]["gameState"]["step"] !== updatedGameData[updatedGameIdx]["gameState"]["step"]
-            || newGameData[gameIdx]["gameState"]["phase"] !== updatedGameData[updatedGameIdx]["gameState"]["phase"]) {
-            response.write("data: " + JSON.stringify(updatedGameData[updatedGameIdx]["gameState"]));
-            response.write("\n\n");
-        }
-        newGameData = updatedGameData;
-        gameIdx = findGame(newGameData, gameParam);
-    });
 }
 
 function findGame(game, gameParam) {
@@ -58,4 +51,44 @@ function findGame(game, gameParam) {
         }
     }
     return -1;
+}
+
+async function gameLoop(gameData, gameIdx, response) {
+    try {
+        const fileData = await fsp.readFile('./data/gameData.json', 'utf8');
+        const updatedGameData = JSON.parse(fileData);
+
+        if (updatedGameData[gameIdx]["gameState"].hasOwnProperty("winner")) {
+            if (updatedGameData[gameIdx]["gameState"]["winner"] === null) {
+                response.write("data: " + JSON.stringify({"winner": null}));
+                response.write("\n\n");
+            } else {
+                response.write("data: " + JSON.stringify(updatedGameData[gameIdx]["gameState"]));
+                response.write("\n\n");
+            }
+            return;
+        }
+
+        if (Object.keys(gameData[gameIdx]["gameState"]["players"]).length < 2 && Object.keys(updatedGameData[gameIdx]["gameState"]["players"]).length === 2) {
+            response.write("data: " + JSON.stringify(updatedGameData[gameIdx]["gameState"]));
+            response.write("\n\n");
+
+        }
+
+        if (gameData[gameIdx]["gameState"]["move"] !== updatedGameData[gameIdx]["gameState"]["move"]
+            || gameData[gameIdx]["gameState"]["step"] !== updatedGameData[gameIdx]["gameState"]["step"]
+            || gameData[gameIdx]["gameState"]["phase"] !== updatedGameData[gameIdx]["gameState"]["phase"]) {
+            response.write("data: " + JSON.stringify(updatedGameData[gameIdx]["gameState"]));
+            response.write("\n\n");
+        }
+
+        setTimeout(() => {
+            gameLoop(updatedGameData, gameIdx, response);
+        }, 4000)
+
+    } catch (error) {
+        console.error('Error processing :', error);
+        response.writeHead(500, serverConfig.headers.plain);
+        response.end();
+    }
 }

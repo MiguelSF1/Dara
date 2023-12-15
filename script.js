@@ -1,5 +1,5 @@
 const url = "http://twserver.alunos.dcc.fc.up.pt:8008/";
-//const url = "http://localhost:8008/"
+//const url = "http://34.147.54.249:8128/";
 let username;
 let password;
 let game = null;
