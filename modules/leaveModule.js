@@ -1,5 +1,6 @@
 const fsp = require('fs').promises;
 const serverConfig = require("./configModule");
+const gameLogic = require("./gameModule");
 
 module.exports = async function (request, response) {
     let answer = {};
@@ -23,6 +24,14 @@ module.exports = async function (request, response) {
 
         const newGameData = findGame(userInput["game"], gameData, userInput["nick"]);
         await fsp.writeFile('./data/gameData.json', JSON.stringify(newGameData));
+
+        const gameIdx = findGameIdx(newGameData, userInput["game"]);
+        if (gameIdx !== -1) {
+            const leaderboardData = await fsp.readFile('./data/leaderboardData.json', 'utf8');
+            const leaderboard = JSON.parse(leaderboardData);
+            const updatedLeaderboard = gameLogic.updateLeaderboard(newGameData[gameIdx], leaderboard);
+            await fsp.writeFile('./data/leaderboardData.json', JSON.stringify(updatedLeaderboard));
+        }
 
         status = 200;
         response.writeHead(status, serverConfig.headers.plain);
@@ -51,4 +60,13 @@ function findGame(game, gameData, nick) {
         }
     }
     return newGameData;
+}
+
+function findGameIdx(game, gameParam) {
+    for (let i = 0; i < game.length; i++) {
+        if (game[i]["game"] === gameParam) {
+            return i;
+        }
+    }
+    return -1;
 }

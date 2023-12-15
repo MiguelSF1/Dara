@@ -25,14 +25,6 @@ module.exports = async function (request, response, nickParam, gameParam) {
 
             await gameLoop(gameData, gameIdx, response);
 
-            const finalFileData = await fsp.readFile('./data/gameData.json', 'utf8');
-            let finalGameData = JSON.parse(finalFileData);
-
-            const leaderboardData = await fsp.readFile('./data/leaderboardData.json', 'utf8');
-            const leaderboard = JSON.parse(leaderboardData);
-            const updatedLeaderboard = gameLogic.updateLeaderboard(finalGameData[gameIdx], leaderboard);
-            await fsp.writeFile('./data/leaderboardData.json', JSON.stringify(updatedLeaderboard));
-
         } else {
             response.writeHead(400, serverConfig.headers.sse);
             response.end();

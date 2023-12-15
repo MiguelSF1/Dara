@@ -106,6 +106,11 @@ module.exports = async function (request, response) {
                 }
                 game[gameIdx]["gameState"]["winner"] = winner;
                 await fsp.writeFile('./data/gameData.json', JSON.stringify(game));
+
+                const leaderboardData = await fsp.readFile('./data/leaderboardData.json', 'utf8');
+                const leaderboard = JSON.parse(leaderboardData);
+                const updatedLeaderboard = gameLogic.updateLeaderboard(game[gameIdx], leaderboard);
+                await fsp.writeFile('./data/leaderboardData.json', JSON.stringify(updatedLeaderboard));
             }
         }
 
