@@ -4,8 +4,7 @@ module.exports.headers = {
         'Cache-Control': 'no-cache',
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
-        'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token, Authorization',
-        'Access-Control-Allow-Credentials': 'true'
+        'Access-Control-Allow-Headers': 'Origin, Content-Type',
     },
     sse: {
         'Content-Type': 'text/event-stream',

@@ -425,6 +425,7 @@ function updateGame() {
     let step, state;
     eventSource.onmessage = function(event) {
         const data = JSON.parse(event.data);
+        console.log(data);
 
         // end game
         if (data.hasOwnProperty("winner")) {

@@ -134,25 +134,25 @@ module.exports.gameOver = function gameOver(board, prevWhiteMove, prevBlackMove,
         for (let j = 0; j < board[0].length; j++) {
             if (board[i][j] !== "empty") {
                 let playerMoveColor = board[i][j];
-                if (j + 1 < board[0].length && board[i][j + 1] === "empty" && checkPieceLimit(i, j, i, j + 1, playerMoveColor)) {
+                if (j + 1 < board[0].length && board[i][j + 1] === "empty" && checkPieceLimit(i, j, i, j + 1, playerMoveColor, board)) {
                     if (playerMoveColor === "white" && !(prevWhiteMove[0] === i && prevWhiteMove[1] === j && prevWhiteMove[2] === i && prevWhiteMove[3] === j + 1)) {
                         whiteHasMove = true;
                     } else if (playerMoveColor === "black" && !(prevBlackMove[0] === i && prevBlackMove[1] === j && prevBlackMove[2] === i && prevBlackMove[3] === j + 1)) {
                         blackHasMove = true;
                     }
-                } else if (j - 1 >= 0 && board[i][j - 1] === "empty" && checkPieceLimit(i, j, i, j - 1, playerMoveColor)) {
+                } else if (j - 1 >= 0 && board[i][j - 1] === "empty" && checkPieceLimit(i, j, i, j - 1, playerMoveColor, board)) {
                     if (playerMoveColor === "white" && !(prevWhiteMove[0] === i && prevWhiteMove[1] === j && prevWhiteMove[2] === i && prevWhiteMove[3] === j - 1)) {
                         whiteHasMove = true;
                     } else if (playerMoveColor === "black" && !(prevBlackMove[0] === i && prevBlackMove[1] === j && prevBlackMove[2] === i && prevBlackMove[3] === j - 1)) {
                         blackHasMove = true;
                     }
-                } else if (i + 1 < board.length && board[i + 1][j] === "empty" && checkPieceLimit(i, j, i + 1, j, playerMoveColor)) {
+                } else if (i + 1 < board.length && board[i + 1][j] === "empty" && checkPieceLimit(i, j, i + 1, j, playerMoveColor, board)) {
                     if (playerMoveColor === "white" && !(prevWhiteMove[0] === i && prevWhiteMove[1] === j && prevWhiteMove[2] === i + 1 && prevWhiteMove[3] === j)) {
                         whiteHasMove = true;
                     } else if (playerMoveColor === "black" && !(prevBlackMove[0] === i && prevBlackMove[1] === j && prevBlackMove[2] === i + 1 && prevBlackMove[3] === j)) {
                         blackHasMove = true;
                     }
-                } else if (i - 1 >= 0 && board[i - 1][j] === "empty" && checkPieceLimit(i, j, i - 1, j, playerMoveColor)) {
+                } else if (i - 1 >= 0 && board[i - 1][j] === "empty" && checkPieceLimit(i, j, i - 1, j, playerMoveColor, board)) {
                     if (playerMoveColor === "white" && !(prevWhiteMove[0] === i && prevWhiteMove[1] === j && prevWhiteMove[2] === i - 1 && prevWhiteMove[3] === j)) {
                         whiteHasMove = true;
                     } else if (playerMoveColor === "black" && !(prevBlackMove[0] === i && prevBlackMove[1] === j && prevBlackMove[2] === i - 1 && prevBlackMove[3] === j)) {

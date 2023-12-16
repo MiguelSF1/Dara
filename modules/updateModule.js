@@ -1,6 +1,5 @@
 const fsp = require('fs').promises;
 const serverConfig = require("./configModule");
-const gameLogic = require("./gameModule");
 
 
 module.exports = async function (request, response, nickParam, gameParam) {
@@ -67,9 +66,10 @@ async function gameLoop(gameData, gameIdx, response) {
 
         }
 
-        if (gameData[gameIdx]["gameState"]["move"] !== updatedGameData[gameIdx]["gameState"]["move"]
-            || gameData[gameIdx]["gameState"]["step"] !== updatedGameData[gameIdx]["gameState"]["step"]
-            || gameData[gameIdx]["gameState"]["phase"] !== updatedGameData[gameIdx]["gameState"]["phase"]) {
+        if (!gameData[gameIdx]["gameState"].hasOwnProperty("move") && updatedGameData[gameIdx]["gameState"].hasOwnProperty("move")) {
+            response.write("data: " + JSON.stringify(updatedGameData[gameIdx]["gameState"]));
+            response.write("\n\n");
+        } else if (gameData[gameIdx]["gameState"]["move"] !== updatedGameData[gameIdx]["gameState"]["move"]) {
             response.write("data: " + JSON.stringify(updatedGameData[gameIdx]["gameState"]));
             response.write("\n\n");
         }
