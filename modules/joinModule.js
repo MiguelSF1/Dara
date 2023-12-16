@@ -64,7 +64,7 @@ module.exports = async function (request, response) {
 function findGame(gameData, userInput) {
     for (let i = 0; i < gameData.length; i++) {
         if (gameData[i]["group"] === userInput["group"] && gameData[i]["size"]["rows"] === userInput["size"]["rows"]
-            && gameData[i]["size"]["columns"] === userInput["size"]["columns"] && !gameData[i].hasOwnProperty("winner")) {
+            && gameData[i]["size"]["columns"] === userInput["size"]["columns"] && !gameData[i]["gameState"].hasOwnProperty("winner")) {
             if (Object.keys(gameData[i]["gameState"]["players"]).length < 2) {
                 return gameData[i]["game"];
             }

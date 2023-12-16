@@ -19,14 +19,23 @@ module.exports = async function (request, response) {
         }
 
 
+
         const fileData = await fsp.readFile('./data/gameData.json', 'utf8');
         const gameData = JSON.parse(fileData);
+
+        const gameIdx = findGameIdx(gameData, userInput["game"]);
+
+        if (gameIdx === -1 || gameData[gameIdx]["gameState"].hasOwnProperty("winner")) {
+            answer.error = "game does not exist or game already over";
+            response.writeHead(400, serverConfig.headers.plain);
+            response.end(JSON.stringify(answer));
+            return;
+        }
 
         const newGameData = findGame(userInput["game"], gameData, userInput["nick"]);
         await fsp.writeFile('./data/gameData.json', JSON.stringify(newGameData));
 
-        const gameIdx = findGameIdx(newGameData, userInput["game"]);
-        if (gameIdx !== -1) {
+        if (newGameData[gameIdx]["gameState"]["winner"] !== null) {
             const leaderboardData = await fsp.readFile('./data/leaderboardData.json', 'utf8');
             const leaderboard = JSON.parse(leaderboardData);
             const updatedLeaderboard = gameLogic.updateLeaderboard(newGameData[gameIdx], leaderboard);

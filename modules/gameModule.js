@@ -196,16 +196,16 @@ module.exports.updateLeaderboard = function updateLeaderboard(game, oldLeaderboa
     let foundWinnerEntry = false;
     let foundLoserEntry = false;
     let foundTable = null;
-    for (let table in leaderboard) {
-        if (table["group"] === group && table["size"]["rows"] === rows && table["size"]["columns"] === columns) {
-            foundTable = table;
-            for (let player in table["ranking"]) {
-                if (player["nick"] === winner) {
-                    player["games"]++;
-                    player["victories"]++;
+    for (let i = 0; i < leaderboard.length; i++) {
+        if (leaderboard[i]["group"] === group && leaderboard[i]["size"]["rows"] === rows && leaderboard[i]["size"]["columns"] === columns) {
+            foundTable = leaderboard[i];
+            for (let j = 0; j < leaderboard[i]["ranking"].length; j++) {
+                if (leaderboard[i]["ranking"][j]["nick"] === winner) {
+                    leaderboard[i]["ranking"][j]["games"]++;
+                    leaderboard[i]["ranking"][j]["victories"]++;
                     foundWinnerEntry = true;
-                } else if (player["nick"] === loser) {
-                    player["games"]++;
+                } else if (leaderboard[i]["ranking"][j]["nick"] === loser) {
+                    leaderboard[i]["ranking"][j]["games"]++;
                     foundLoserEntry = true;
                 }
             }
