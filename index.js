@@ -27,6 +27,10 @@ const server = http.createServer(function (request, response) {
         case 'POST':
             doPost(pathname, request, response);
             break;
+        case 'OPTIONS':
+            response.writeHead(200, serverConfig.headers.plain);
+            response.end();
+            break;
         default:
             response.writeHead(501, serverConfig.headers.plain);
             response.end();

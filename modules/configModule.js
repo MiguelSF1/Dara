@@ -2,7 +2,10 @@ module.exports.headers = {
     plain: {
         'Content-Type': 'application/json',
         'Cache-Control': 'no-cache',
-        'Access-Control-Allow-Origin': '*'
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
+        'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token, Authorization',
+        'Access-Control-Allow-Credentials': 'true'
     },
     sse: {
         'Content-Type': 'text/event-stream',
