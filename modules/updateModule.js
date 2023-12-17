@@ -22,8 +22,13 @@ module.exports = async function (request, response, nickParam, gameParam) {
                 fsp.readFile('./data/gameData.json', 'utf8').then(data => {
                     const updatedGameData = JSON.parse(data);
                     if (prevGameData[gameIdx] !== updatedGameData[gameIdx] && Object.keys(updatedGameData[gameIdx]["gameState"]["players"]).length === 2) {
-                        gameLoop(updatedGameData, gameIdx, response);
+                        response.write("data: " + JSON.stringify(updatedGameData[gameIdx]["gameState"]));
+                        response.write("\n\n");
                         prevGameData = updatedGameData;
+                    } else if (updatedGameData[gameIdx]["gameState"].hasOwnProperty("winner")
+                        && updatedGameData[gameIdx]["gameState"]["winner"] === null) {
+                        response.write("data: " + JSON.stringify({"winner": null}));
+                        response.write("\n\n");
                     }
                 });
             }
@@ -54,20 +59,4 @@ function findGame(game, gameParam) {
         }
     }
     return -1;
-}
-
-function gameLoop(gameData, gameIdx, response) {
-    if (gameData[gameIdx]["gameState"].hasOwnProperty("winner")) {
-        if (gameData[gameIdx]["gameState"]["winner"] === null) {
-            response.write("data: " + JSON.stringify({"winner": null}));
-            response.write("\n\n");
-        } else {
-            response.write("data: " + JSON.stringify(gameData[gameIdx]["gameState"]));
-            response.write("\n\n");
-        }
-        return;
-    }
-
-    response.write("data: " + JSON.stringify(gameData[gameIdx]["gameState"]));
-    response.write("\n\n");
 }
