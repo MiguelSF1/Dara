@@ -59,7 +59,6 @@ module.exports = async function (request, response) {
                     game[gameIdx]["gameState"]["phase"] = "move";
                 }
 
-                await fsp.writeFile('./data/gameData.json', JSON.stringify(game));
             } else {
                 answer.error = "invalid move";
                 response.writeHead(400, serverConfig.headers.plain);
@@ -76,7 +75,6 @@ module.exports = async function (request, response) {
 
                     game[gameIdx]["gameState"]["step"] = "to";
 
-                    await fsp.writeFile('./data/gameData.json', JSON.stringify(game));
                 } else {
                     answer.error = "invalid move";
                     response.writeHead(400, serverConfig.headers.plain);
@@ -113,7 +111,6 @@ module.exports = async function (request, response) {
                         game[gameIdx]["gameState"]["step"] = "from";
                     }
 
-                    await fsp.writeFile('./data/gameData.json', JSON.stringify(game));
                 } else {
                     game[gameIdx]["gameState"]["step"] = "from";
                     await fsp.writeFile('./data/gameData.json', JSON.stringify(game));
@@ -133,7 +130,6 @@ module.exports = async function (request, response) {
                     game[gameIdx]["gameState"]["turn"] = opponent;
                     game[gameIdx]["gameState"]["step"] = "from";
 
-                    await fsp.writeFile('./data/gameData.json', JSON.stringify(game));
                 } else {
                     answer.error = "invalid move";
                     response.writeHead(400, serverConfig.headers.plain);
@@ -154,7 +150,6 @@ module.exports = async function (request, response) {
 
                 game[gameIdx]["gameState"]["winner"] = winner;
 
-                await fsp.writeFile('./data/gameData.json', JSON.stringify(game));
 
                 const leaderboardData = await fsp.readFile('./data/leaderboardData.json', 'utf8');
                 const leaderboard = JSON.parse(leaderboardData);
@@ -162,6 +157,8 @@ module.exports = async function (request, response) {
                 await fsp.writeFile('./data/leaderboardData.json', JSON.stringify(updatedLeaderboard));
             }
         }
+
+        await fsp.writeFile('./data/gameData.json', JSON.stringify(game));
 
         status = 200;
         response.writeHead(status, serverConfig.headers.plain);
