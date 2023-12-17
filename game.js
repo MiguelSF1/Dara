@@ -136,10 +136,6 @@ class Game {
                 this._state = "moving";
             }
 
-            if (this._opponent === "player" && this._curPlayer === this._playerColor) {
-                notifyGame(row, column);
-            }
-
             this.switchTurn();
             return true;
         }
@@ -160,9 +156,7 @@ class Game {
             } else {
                 this._prevBlackMove = [endingRow, endingColumn, startingRow, startingColumn];
             }
-            if (this._opponent === "player" && this._curPlayer === this._playerColor) {
-                notifyFetch(startingRow, startingColumn).then(() => notifyFetch(endingRow, endingColumn));
-            }
+
             if (this.checkInLinePiece(endingRow, endingColumn)) {
                 this.sendGameMessage(this._curPlayer + " can remove a piece");
                 this._state = "removing";
@@ -194,10 +188,6 @@ class Game {
             this._insideWhitePieceCount--;
         } else {
             this._insideBlackPieceCount--;
-        }
-
-        if (this._opponent === "player" && this._curPlayer === this._playerColor) {
-            notifyGame(row, column);
         }
 
         this.switchTurn();

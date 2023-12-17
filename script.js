@@ -54,18 +54,48 @@ function getPlayerMove(e) {
         }
 
         if (game.state === "placing") {
-            game.placePiece(row, column);
+            if (game.opponent === "player") {
+                notifyFetch(row, column).then(() => {
+                    game.placePiece(row, column);
+                }).catch(err => game.sendGameMessage(err));
+            } else {
+                game.placePiece(row, column);
+            }
         } else if (game.state === "moving") {
             if (isPieceClicked) {
-                game.movePiece(pieceClickedRow, pieceClickedColumn, row, column)
-                isPieceClicked = false;
+                if (game.opponent === "player") {
+                    notifyFetch(row, column).then(() => {
+                        game.movePiece(pieceClickedRow, pieceClickedColumn, row, column)
+                        isPieceClicked = false;
+                    }).catch(err => {
+                        game.sendGameMessage(err)
+                        isPieceClicked = false;
+                    });
+                } else {
+                    game.movePiece(pieceClickedRow, pieceClickedColumn, row, column)
+                    isPieceClicked = false;
+                }
             } else {
-                isPieceClicked = true;
-                pieceClickedRow = row;
-                pieceClickedColumn = column;
+                if (game.opponent === "player") {
+                    notifyFetch(row, column).then(() => {
+                        isPieceClicked = true;
+                        pieceClickedRow = row;
+                        pieceClickedColumn = column;
+                    }).catch(err => game.sendGameMessage(err));
+                } else {
+                    isPieceClicked = true;
+                    pieceClickedRow = row;
+                    pieceClickedColumn = column;
+                }
             }
         } else {
-            game.removePiece(row, column);
+            if (game.opponent === "player") {
+                notifyFetch(row, column).then(() => {
+                    game.removePiece(row, column);
+                }).catch(err => game.sendGameMessage(err));
+            } else {
+                game.removePiece(row, column);
+            }
         }
     }
 }
@@ -340,12 +370,6 @@ async function notifyFetch(row, column) {
     } else {
         throw new Error(response.statusText);
     }
-}
-
-function notifyGame(row, column) {
-    notifyFetch(row, column).then(() => {
-
-    }).catch(reason => window.alert(reason));
 }
 
 async function rankingFetch(rows, columns) {

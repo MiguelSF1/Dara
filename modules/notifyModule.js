@@ -115,6 +115,8 @@ module.exports = async function (request, response) {
 
                     await fsp.writeFile('./data/gameData.json', JSON.stringify(game));
                 } else {
+                    game[gameIdx]["gameState"]["step"] = "from";
+                    await fsp.writeFile('./data/gameData.json', JSON.stringify(game));
                     answer.error = "invalid move";
                     response.writeHead(400, serverConfig.headers.plain);
                     response.end(JSON.stringify(answer));
@@ -146,6 +148,7 @@ module.exports = async function (request, response) {
                 for (let player in game[gameIdx]["gameState"]["players"]) {
                     if (game[gameIdx]["gameState"]["players"][player] === colorWinner) {
                         winner = player;
+                        break;
                     }
                 }
 
@@ -163,6 +166,7 @@ module.exports = async function (request, response) {
         status = 200;
         response.writeHead(status, serverConfig.headers.plain);
         response.end(JSON.stringify(answer));
+
     } catch (error) {
         console.error('Error processing :', error);
         response.writeHead(500, serverConfig.headers.plain);

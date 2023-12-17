@@ -11,7 +11,6 @@ module.exports = async function (request, response, nickParam, gameParam) {
 
         response.writeHead(200, serverConfig.headers.sse);
 
-
         let fsWait = false;
         let prevGameData = gameData;
         fs.watch('./data/gameData.json', (event, filename) => {
