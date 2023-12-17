@@ -10,7 +10,8 @@ module.exports = async function (request, response) {
         const data = await serverConfig.readRequestBody(request);
         const userInput = JSON.parse(data);
 
-        if (!userInput.hasOwnProperty("nick") || !userInput.hasOwnProperty("password")) {
+        if (!userInput.hasOwnProperty("nick") || !userInput.hasOwnProperty("password")
+            || typeof userInput["nick"] !== "string" || typeof userInput["password"] !== "string") {
             answer.error = "undefined nick or password";
             response.writeHead(400, serverConfig.headers.plain);
             response.end(JSON.stringify(answer));

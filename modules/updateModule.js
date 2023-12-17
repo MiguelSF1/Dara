@@ -9,6 +9,12 @@ module.exports = async function (request, response, nickParam, gameParam) {
         const gameData = JSON.parse(fileData);
         const gameIdx = findGame(gameData, gameParam);
 
+        if (gameIdx === -1) {
+            response.writeHead(401, serverConfig.headers.plain);
+            response.end();
+            return;
+        }
+
         response.writeHead(200, serverConfig.headers.sse);
 
         let fsWait = false;

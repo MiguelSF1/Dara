@@ -10,6 +10,20 @@ module.exports = async function (request, response) {
         const data = await serverConfig.readRequestBody(request);
         const userInput = JSON.parse(data);
 
+        if (!userInput.hasOwnProperty("nick") || !userInput.hasOwnProperty("password") || !userInput.hasOwnProperty("game")) {
+            answer.error = "undefined nick or password or game";
+            response.writeHead(400, serverConfig.headers.plain);
+            response.end(JSON.stringify(answer));
+            return;
+        }
+
+        if (typeof userInput["nick"] !== "string" || typeof userInput["password"] !== "string" || typeof userInput["game"] !== "string") {
+            answer.error = "wrong type for nick or password or game";
+            response.writeHead(400, serverConfig.headers.plain);
+            response.end(JSON.stringify(answer));
+            return;
+        }
+
         if (typeof userInput["move"] !== "object" || !Number.isInteger(userInput["move"]["row"]) || !Number.isInteger(userInput["move"]["column"]) || userInput["move"]["row"] < 0
             || userInput["move"]["column"] < 0) {
             answer.error = "invalid move value";

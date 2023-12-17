@@ -18,6 +18,13 @@ module.exports = async function (request, response) {
             return;
         }
 
+        if (typeof userInput["nick"] !== "string" || typeof userInput["password"] !== "string" || typeof userInput["game"] !== "string") {
+            answer.error = "wrong type for nick or password or game";
+            response.writeHead(400, serverConfig.headers.plain);
+            response.end(JSON.stringify(answer));
+            return;
+        }
+
 
 
         const fileData = await fsp.readFile('./data/gameData.json', 'utf8');

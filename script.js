@@ -300,7 +300,7 @@ function logout() {
     const loggedIn = document.querySelector('.logged-in');
     loggedOut.style.display = 'block';
     loggedIn.style.display = 'none';
-    if (game !== null) {
+    if (game !== null && game.winner === " ") {
         leaveGame();
     }
 }

@@ -23,6 +23,7 @@ module.exports = async function (request, response) {
             return;
         }
 
+
         if (!userInput["size"].hasOwnProperty("rows") || !userInput["size"].hasOwnProperty("columns")) {
             answer.error = "undefined rows or columns from size";
             response.writeHead("400", serverConfig.headers.plain);
@@ -33,6 +34,13 @@ module.exports = async function (request, response) {
         if (!Number.isInteger(userInput["size"]["rows"]) || !Number.isInteger(userInput["size"]["columns"])) {
             answer.error = "invalid rows or columns value from size";
             response.writeHead("400", serverConfig.headers.plain);
+            response.end(JSON.stringify(answer));
+            return;
+        }
+
+        if (userInput["group"] <= 0) {
+            answer.error = "group value has to be positive";
+            response.writeHead(400, serverConfig.headers.plain);
             response.end(JSON.stringify(answer));
             return;
         }

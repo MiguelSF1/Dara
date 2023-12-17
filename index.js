@@ -19,8 +19,14 @@ const server = http.createServer(function (request, response) {
             let gameParam = null;
             if (parsedUrl.search !== null) {
                 const idxGameParam = parsedUrl.search.indexOf("&");
-                nickParam = parsedUrl.search.substring(6, idxGameParam);
-                gameParam = parsedUrl.search.substring(idxGameParam + 6);
+                if (idxGameParam !== -1) {
+                    nickParam = parsedUrl.search.substring(6, idxGameParam);
+                    gameParam = parsedUrl.search.substring(idxGameParam + 6);
+                } else {
+                    response.writeHead(400, serverConfig.headers.plain);
+                    response.end();
+                    break;
+                }
             }
             doGet(pathname, request, response, nickParam, gameParam);
             break;
