@@ -26,14 +26,14 @@ module.exports = async function (request, response) {
 
         if (!userInput["size"].hasOwnProperty("rows") || !userInput["size"].hasOwnProperty("columns")) {
             answer.error = "undefined rows or columns from size";
-            response.writeHead("400", serverConfig.headers.plain);
+            response.writeHead(400, serverConfig.headers.plain);
             response.end(JSON.stringify(answer));
             return;
         }
 
         if (!Number.isInteger(userInput["size"]["rows"]) || !Number.isInteger(userInput["size"]["columns"])) {
             answer.error = "invalid rows or columns value from size";
-            response.writeHead("400", serverConfig.headers.plain);
+            response.writeHead(400, serverConfig.headers.plain);
             response.end(JSON.stringify(answer));
             return;
         }

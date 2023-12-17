@@ -35,21 +35,31 @@ module.exports = async function (request, response) {
 
         if (!userInput["size"].hasOwnProperty("rows") || !userInput["size"].hasOwnProperty("columns")) {
             answer.error = "undefined rows or columns from size";
-            response.writeHead("400", serverConfig.headers.plain);
+            response.writeHead(400, serverConfig.headers.plain);
             response.end(JSON.stringify(answer));
             return;
         }
 
         if (!Number.isInteger(userInput["size"]["rows"]) || !Number.isInteger(userInput["size"]["columns"])) {
             answer.error = "invalid rows or columns value from size";
-            response.writeHead("400", serverConfig.headers.plain);
+            response.writeHead(400, serverConfig.headers.plain);
             response.end(JSON.stringify(answer));
             return;
         }
 
         if (typeof userInput["nick"] !== "string" || typeof userInput["password"] !== "string") {
             answer.error = "invalid nick or password type";
-            response.writeHead("400", serverConfig.headers.plain);
+            response.writeHead(400, serverConfig.headers.plain);
+            response.end(JSON.stringify(answer));
+            return;
+        }
+
+        const fileUserData = await fsp.readFile('./data/userData.json', 'utf8');
+        const userData = JSON.parse(fileUserData);
+
+        if (!checkUser(userData, userInput)) {
+            answer.error = "invalid nick password combination";
+            response.writeHead(401, serverConfig.headers.plain);
             response.end(JSON.stringify(answer));
             return;
         }
@@ -59,8 +69,13 @@ module.exports = async function (request, response) {
         const gameData = JSON.parse(fileData);
 
         let game = findGame(gameData, userInput);
+        let time = new Date().toString();
+
         if (game === "") {
-            game = crypto.createHash('md5').update(getRandomNumber(Number.MAX_VALUE).toString()).digest('hex');
+            game = crypto.createHash('md5')
+                .update(getRandomNumber(Number.MAX_VALUE).toString() + time + userInput["group"].toString()
+                    + userInput["size"]["rows"].toString() + userInput["size"]["columns"].toString())
+                .digest('hex');
             await fsp.writeFile('./data/gameData.json', JSON.stringify(makeGame(userInput, game, gameData)));
         }
 
@@ -112,4 +127,14 @@ function makeGame(userInput, game, gameData) {
 
 function getRandomNumber(max) {
     return Math.floor(Math.random() * max);
+}
+
+function checkUser(data, query) {
+    const password = crypto.createHash('md5').update(query.password).digest('hex');
+    for (let i = 0; i < data.length; i++) {
+        if (data[i].nick === query.nick) {
+            return data[i].password === password;
+        }
+    }
+    return false;
 }

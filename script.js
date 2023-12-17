@@ -57,7 +57,7 @@ function getPlayerMove(e) {
             if (game.opponent === "player") {
                 notifyFetch(row, column).then(() => {
                     game.placePiece(row, column);
-                }).catch(err => game.sendGameMessage(err));
+                }).catch(() => game.sendGameMessage("invalid move"));
             } else {
                 game.placePiece(row, column);
             }
@@ -67,8 +67,8 @@ function getPlayerMove(e) {
                     notifyFetch(row, column).then(() => {
                         game.movePiece(pieceClickedRow, pieceClickedColumn, row, column)
                         isPieceClicked = false;
-                    }).catch(err => {
-                        game.sendGameMessage(err)
+                    }).catch(() => {
+                        game.sendGameMessage("invalid move")
                         isPieceClicked = false;
                     });
                 } else {
@@ -81,7 +81,7 @@ function getPlayerMove(e) {
                         isPieceClicked = true;
                         pieceClickedRow = row;
                         pieceClickedColumn = column;
-                    }).catch(err => game.sendGameMessage(err));
+                    }).catch(() => game.sendGameMessage("invalid move"));
                 } else {
                     isPieceClicked = true;
                     pieceClickedRow = row;
@@ -92,7 +92,7 @@ function getPlayerMove(e) {
             if (game.opponent === "player") {
                 notifyFetch(row, column).then(() => {
                     game.removePiece(row, column);
-                }).catch(err => game.sendGameMessage(err));
+                }).catch(() => game.sendGameMessage("invalid move"));
             } else {
                 game.removePiece(row, column);
             }

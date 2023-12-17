@@ -10,7 +10,16 @@ module.exports = async function (request, response, nickParam, gameParam) {
         const gameIdx = findGame(gameData, gameParam);
 
         if (gameIdx === -1) {
-            response.writeHead(401, serverConfig.headers.plain);
+            response.writeHead(400, serverConfig.headers.plain);
+            response.end();
+            return;
+        }
+
+        const fileUserData = await fsp.readFile('./data/userData.json', 'utf8');
+        const userData = JSON.parse(fileUserData);
+
+        if (!findNick(userData, nickParam)) {
+            response.writeHead(400, serverConfig.headers.plain);
             response.end();
             return;
         }
@@ -26,17 +35,19 @@ module.exports = async function (request, response, nickParam, gameParam) {
                     fsWait = false;
                 }, 100);
                 fsp.readFile('./data/gameData.json', 'utf8').then(data => {
-                    const updatedGameData = JSON.parse(data);
-                    if (prevGameData[gameIdx] !== updatedGameData[gameIdx] && Object.keys(updatedGameData[gameIdx]["gameState"]["players"]).length === 2) {
-                        response.write("data: " + JSON.stringify(updatedGameData[gameIdx]["gameState"]));
-                        response.write("\n\n");
-                        prevGameData = updatedGameData;
-                    } else if (updatedGameData[gameIdx]["gameState"].hasOwnProperty("winner")
-                        && updatedGameData[gameIdx]["gameState"]["winner"] === null) {
-                        response.write("data: " + JSON.stringify({"winner": null}));
-                        response.write("\n\n");
-                    }
-                });
+                    try {
+                        const updatedGameData = JSON.parse(data);
+                        if (prevGameData[gameIdx] !== updatedGameData[gameIdx] && Object.keys(updatedGameData[gameIdx]["gameState"]["players"]).length === 2) {
+                            response.write("data: " + JSON.stringify(updatedGameData[gameIdx]["gameState"]));
+                            response.write("\n\n");
+                            prevGameData = updatedGameData;
+                        } else if (updatedGameData[gameIdx]["gameState"].hasOwnProperty("winner")
+                            && updatedGameData[gameIdx]["gameState"]["winner"] === null) {
+                            response.write("data: " + JSON.stringify({"winner": null}));
+                            response.write("\n\n");
+                        }
+                    } catch (err) {}
+                }).catch(() => {});
             }
         });
 
@@ -65,4 +76,13 @@ function findGame(game, gameParam) {
         }
     }
     return -1;
+}
+
+function findNick(users, nickParam) {
+    for (let i = 0; i < users.length; i++) {
+        if (users[i]["nick"] === nickParam) {
+            return true;
+        }
+    }
+    return false;
 }

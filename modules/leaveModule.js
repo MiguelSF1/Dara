@@ -1,6 +1,7 @@
 const fsp = require('fs').promises;
 const serverConfig = require("./configModule");
 const gameLogic = require("./gameModule");
+const crypto = require("crypto");
 
 module.exports = async function (request, response) {
     let answer = {};
@@ -25,7 +26,15 @@ module.exports = async function (request, response) {
             return;
         }
 
+        const fileUserData = await fsp.readFile('./data/userData.json', 'utf8');
+        const userData = JSON.parse(fileUserData);
 
+        if (!checkUser(userData, userInput)) {
+            answer.error = "invalid nick password combination";
+            response.writeHead(401, serverConfig.headers.plain);
+            response.end(JSON.stringify(answer));
+            return;
+        }
 
         const fileData = await fsp.readFile('./data/gameData.json', 'utf8');
         const gameData = JSON.parse(fileData);
@@ -85,4 +94,14 @@ function findGameIdx(game, gameParam) {
         }
     }
     return -1;
+}
+
+function checkUser(data, query) {
+    const password = crypto.createHash('md5').update(query.password).digest('hex');
+    for (let i = 0; i < data.length; i++) {
+        if (data[i].nick === query.nick) {
+            return data[i].password === password;
+        }
+    }
+    return false;
 }
