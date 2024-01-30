@@ -1,2 +1,2 @@
 # Dara
-The dara game made in html css and javascript.
+The game "dara" made in html, css, js and a nodejs server for the game.
